@@ -1,0 +1,30 @@
+{
+  "id": "vtm5e-coterie",
+  "title": "VtM5e Coterie",
+  "description": "Party sheet for Vampire the Masquerade 5e - live Members/Merits & Flaws/Equipment reads across the coterie. Not published; built for personal use.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "authors": [
+    {
+      "name": "Jake"
+    }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "wod5e",
+        "type": "system",
+        "compatibility": {}
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/vtm5e-coterie.css"
+  ]
+}

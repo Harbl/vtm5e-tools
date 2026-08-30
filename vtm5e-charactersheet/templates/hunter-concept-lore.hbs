@@ -1,0 +1,85 @@
+{{!-- VtM5e Character Sheet Reskin - Hunter Concept & Lore.
+      Same shape as the Ghoul/Mortal version (no Sire/Generation, no Apparent
+      Age/Date of Death), plus two Hunter-only read-only fields pulled from
+      whichever Drive/Creed item is equipped: Redemption (the Drive's escape
+      clause) and Creed Fields (the Creed's Desperation triggers). Those two
+      lived in wod5e's stock combined Features tab - split out here to match
+      this module's separate Concept & Lore / Merits & Flaws tabs instead. --}}
+<section class="tab {{tab.cssClass}}" data-tab="{{tab.id}}" data-group="{{tab.group}}">
+    <div class="cs-cl-scroll">
+        <div class="resource-header cs-cl-divider"><span class="header-label">Details</span></div>
+
+        <div class="cs-cl-field">
+            <label class="resource-label field-header">{{localize "WOD5E.BiographyList.Concept"}}</label>
+            <input type="text" name="system.headers.concept" value="{{concept}}" placeholder="{{localize 'WOD5E.BiographyList.Concept'}}"/>
+        </div>
+        <div class="cs-cl-field">
+            <label class="resource-label field-header">{{localize "WOD5E.BiographyList.Chronicle"}}</label>
+            <input type="text" name="system.headers.chronicle" value="{{chronicle}}" placeholder="{{localize 'WOD5E.BiographyList.Chronicle'}}"/>
+        </div>
+
+        <div class="cs-cl-row">
+            <div class="cs-cl-field">
+                <label class="resource-label field-header">{{localize "WOD5E.HTR.Redemption"}}</label>
+                <span class="cs-cl-readonly">{{redemption}}</span>
+            </div>
+            <div class="cs-cl-field">
+                <label class="resource-label field-header">{{localize "WOD5E.HTR.CreedFields"}}</label>
+                <span class="cs-cl-readonly">{{creedFields}}</span>
+            </div>
+        </div>
+
+        <div class="cs-cl-row">
+            <div class="cs-cl-field">
+                <label class="resource-label field-header">{{localize "WOD5E.BiographyList.Age"}}</label>
+                <input type="text" name="system.bio.age.trueage" value="{{bio.age.trueage}}"/>
+            </div>
+            <div class="cs-cl-field">
+                <label class="resource-label field-header">{{localize "WOD5E.BiographyList.DateOfBirth"}}</label>
+                <input type="text" name="system.bio.dateof.birth" value="{{bio.dateof.birth}}"/>
+            </div>
+        </div>
+
+        <div class="cs-cl-field">
+            <label class="resource-label field-header">{{localize "WOD5E.BiographyList.Appearance"}}</label>
+            <div class="description-content resource">
+                <prose-mirror name="system.appearance" value="{{appearance}}" toggled="true" compact="true">{{{enrichedAppearance}}}</prose-mirror>
+            </div>
+        </div>
+
+        <div class="cs-cl-field">
+            <label class="resource-label field-header">{{localize "WOD5E.BiographyList.Label"}}</label>
+            <div class="description-content resource">
+                <prose-mirror name="system.biography" value="{{biography}}" toggled="true" compact="true">{{{enrichedBiography}}}</prose-mirror>
+            </div>
+        </div>
+
+        <div class="resource-header cs-cl-divider"><span class="header-label">Beliefs</span></div>
+
+        <div class="cs-cl-row cs-cl-row-top">
+            <div class="cs-cl-field">
+                <label class="resource-label field-header">{{localize "WOD5E.BiographyList.Touchstones"}}</label>
+                <div class="description-content resource">
+                    <prose-mirror name="system.headers.touchstones" value="{{touchstones}}" toggled="true" compact="true">{{{enrichedTouchstones}}}</prose-mirror>
+                </div>
+            </div>
+            <div class="cs-cl-field">
+                <label class="resource-label field-header">{{localize "WOD5E.BiographyList.ChronicleTenets"}}</label>
+                <div class="description-content resource">
+                    <prose-mirror name="system.headers.tenets" value="{{tenets}}" toggled="true" compact="true">{{{enrichedTenets}}}</prose-mirror>
+                </div>
+            </div>
+        </div>
+
+        <div class="cs-cl-row">
+            <div class="cs-cl-field">
+                <label class="resource-label field-header">{{localize "WOD5E.BiographyList.Ambition"}}</label>
+                <input type="text" name="system.headers.ambition" value="{{ambition}}" placeholder="{{localize 'WOD5E.BiographyList.Ambition'}}"/>
+            </div>
+            <div class="cs-cl-field">
+                <label class="resource-label field-header">{{localize "WOD5E.BiographyList.Desire"}}</label>
+                <input type="text" name="system.headers.desire" value="{{desire}}" placeholder="{{localize 'WOD5E.BiographyList.Desire'}}"/>
+            </div>
+        </div>
+    </div>
+</section>

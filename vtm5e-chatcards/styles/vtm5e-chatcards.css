@@ -1,0 +1,234 @@
+/* VtM5e Chat Card Reskin
+   Overrides wod5e's stock roll-card styling (display/ui/chat/*.hbs + chat.less /
+   vampire-theme.less) to match Jake's reference design: dark mottled card,
+   diamond dice, banner-style title bar, stacked total/difficulty, full-bleed
+   result bar. Loads after wod5e's compiled CSS so these rules win on equal
+   specificity, but selectors are still scoped + !important'd wherever the base
+   system pins width/border/background - see feedback-css-specificity-gotcha. */
+
+:root {
+  /* Mottled dark-red leather/parchment look shared by both banner elements
+     below (wod5e's own .roll-label and vtm5e-automation's recap-title) -
+     layered radial gradients standing in for a texture image, since neither
+     template gives us a spot to hang a background-image asset on. */
+  --vtm5e-mottled-red:
+    radial-gradient(circle at 18% 25%, rgba(150, 40, 40, 0.55) 0%, transparent 45%),
+    radial-gradient(circle at 78% 65%, rgba(110, 20, 20, 0.5) 0%, transparent 50%),
+    radial-gradient(circle at 50% 100%, rgba(70, 10, 10, 0.6) 0%, transparent 60%),
+    linear-gradient(180deg, #4a1212 0%, #2c0b0b 100%);
+}
+
+.chat-message {
+  background: linear-gradient(160deg, #5a5a5a 0%, #4c4c4c 45%, #3e3e3e 100%) !important;
+  border: 1px solid #161616 !important;
+  border-radius: 3px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+  padding: 4px !important;
+  margin-bottom: 4px !important;
+}
+
+.chat-message .message-header {
+  padding: 4px 6px 2px;
+}
+
+.chat-message .message-header .portrait.token {
+  display: none !important;
+}
+
+.chat-message .message-sender {
+  font-family: Vollkorn, serif;
+  font-weight: 700;
+  font-size: 1.1em;
+  color: #f2efef;
+}
+
+.chat-message hr {
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.45);
+  margin: 2px 0;
+}
+
+/* Roll title banner ("PERFORMANCE + MANIPULATION") */
+.chat-message .roll-label.uppercase {
+  background: var(--vtm5e-mottled-red);
+  border-top: 2px solid #7a1010;
+  border-bottom: 2px solid #7a1010;
+  color: #ece5e5;
+  padding: 5px 8px;
+  margin: 0 !important;
+  letter-spacing: 0.08em;
+  font-size: 1em;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Dice row */
+.chat-message .dice-icons {
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  row-gap: 8px;
+}
+
+.chat-message .roll-img {
+  width: 34px !important;
+  height: 34px !important;
+  max-width: 34px !important;
+  min-width: 34px !important;
+  min-height: 34px !important;
+  margin: 3px !important;
+  padding: 5px;
+  box-sizing: border-box;
+  border: none !important;
+  border-radius: 0 !important;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  box-shadow: inset 0 0 0 3px #a51818;
+  object-fit: contain;
+}
+
+.chat-message .roll-img.rerolled {
+  box-shadow: inset 0 0 0 3px #6b6b6b;
+}
+
+/* Total / Difficulty - stacked, centered, no boxes */
+.chat-message .total-and-difficulty {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center;
+  border: none !important;
+  gap: 2px;
+  padding: 6px 0 3px;
+}
+
+.chat-message .roll-total,
+.chat-message .roll-difficulty {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 0;
+  gap: 6px;
+  justify-content: center;
+  font-size: 1.05em;
+}
+
+.chat-message .total-title,
+.chat-message .difficulty-title {
+  font-weight: 700;
+}
+
+/* Result bar ("Failure by 1") - full bleed, no border */
+.chat-message .roll-result-label {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 6px 0 0 !important;
+  padding: 8px 0;
+  border: none !important;
+  font-size: 1.35em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-shadow: none !important;
+}
+
+.chat-message .roll-result-label.failure,
+.chat-message .roll-result-label.critical-failure,
+.chat-message .roll-result-label.bestial-failure {
+  background-color: #a3585c !important;
+  color: #f0e4e4 !important;
+}
+
+.chat-message .roll-result-label.success,
+.chat-message .roll-result-label.critical-success {
+  background-color: #4d7048 !important;
+  color: #e6ede4 !important;
+}
+
+/* vtm5e-automation's opposed-roll recap card (Sig Sauer P320-style messages)
+   isn't wod5e's own chat-message-roll.hbs - it's a custom template
+   (opposing-roll-trigger.js/social-conflict.js) that embeds wod5e's real
+   dice-roll HTML (picked up by the .roll-img/.dice-icons rules above) inside
+   its own wrapper markup. Its title needs the same banner treatment as
+   .roll-label above; load order between this module and vtm5e-automation
+   isn't guaranteed, so these carry !important same as the base rules do. */
+.vtm5e-automation-recap-title {
+  background: var(--vtm5e-mottled-red) !important;
+  border-top: 2px solid #7a1010 !important;
+  border-bottom: 2px solid #7a1010 !important;
+  color: #ece5e5 !important;
+  padding: 5px 8px !important;
+  margin: 0 0 4px !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 0.95em;
+}
+
+.vtm5e-automation-recap-name {
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.95em;
+  color: #d8d0d0;
+}
+
+.vtm5e-automation-recap-defense {
+  color: #b8acac;
+}
+
+/* Bottom "who won" banner - same mottled-red banner treatment as the card
+   title, so the outcome reads as the other bookend of the card instead of
+   getting lost among the two shrunk sub-rolls above it. */
+.vtm5e-automation-recap-outcome {
+  background: var(--vtm5e-mottled-red) !important;
+  border-top: 2px solid #7a1010 !important;
+  border-bottom: 2px solid #7a1010 !important;
+  color: #ece5e5 !important;
+  padding: 6px 8px !important;
+  margin: 4px 0 0 !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.05em;
+}
+
+/* The opposed-roll recap embeds TWO full wod5e roll blocks (attacker +
+   defender) above its own bottom-line outcome (recap-damage-amount /
+   recap-result in vtm5e-automation.css) - shrink those sub-rolls further
+   than a standalone roll card so the two dice rolls don't outweigh the
+   actual result underneath them. */
+.vtm5e-automation-recap-roll .roll-label.uppercase {
+  padding: 3px 6px !important;
+  font-size: 0.8em !important;
+}
+
+.vtm5e-automation-recap-roll .dice-icons {
+  gap: 4px;
+  padding: 4px 8px;
+  row-gap: 4px;
+}
+
+.vtm5e-automation-recap-roll .roll-img {
+  width: 22px !important;
+  height: 22px !important;
+  max-width: 22px !important;
+  min-width: 22px !important;
+  min-height: 22px !important;
+  margin: 2px !important;
+  padding: 3px;
+}
+
+.vtm5e-automation-recap-roll .total-and-difficulty {
+  padding: 3px 0 2px;
+  gap: 1px;
+}
+
+.vtm5e-automation-recap-roll .roll-total,
+.vtm5e-automation-recap-roll .roll-difficulty {
+  font-size: 0.9em;
+}
+
+.vtm5e-automation-recap-roll .roll-result-label {
+  font-size: 0.85em !important;
+  font-weight: normal !important;
+  padding: 3px 0 !important;
+  margin: 2px 0 0 !important;
+}

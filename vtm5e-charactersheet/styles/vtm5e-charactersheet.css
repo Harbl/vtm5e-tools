@@ -1,0 +1,1316 @@
+/* ==========================================================================
+   VtM5e Character Sheet Reskin - Phase 1 + Phase 2 (header/tab restructure)
+   Everything here is scoped under .actor.sheet.vampire so it can't leak
+   onto Mortal/Ghoul/Werewolf/Hunter/SPC/Group sheets, and it's written to
+   look right regardless of whether Foundry's own "dark theme"/"vampire
+   theme" system settings are toggled on - it sets real values directly
+   rather than only tweaking theme variables that might not be in scope.
+   Pairs with the module-owned header/tab-navigation templates in
+   scripts/vampire-actor-sheet.js, which replace wod5e's stock ones.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Cinzel";
+  src: url("fonts/Cinzel-Regular.otf") format("opentype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Cinzel";
+  src: url("fonts/Cinzel-Bold.otf") format("opentype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Cinzel";
+  src: url("fonts/Cinzel-Black.otf") format("opentype");
+  font-weight: 900;
+}
+
+:root {
+  --vtm5e-cs-bg: #0c0a0a;
+  --vtm5e-cs-bg-panel: #171414;
+  --vtm5e-cs-red-bright: #e0272c;
+  --vtm5e-cs-red-mid: #7a1414;
+  --vtm5e-cs-red-dark: #3a0d0d;
+  --vtm5e-cs-border: #4a2020;
+  --vtm5e-cs-text: #e8e0e0;
+  --vtm5e-cs-text-dim: #b0a0a0;
+  --vtm5e-cs-font-display: "Cinzel", "Cormorant", serif;
+}
+
+/* ---------- Base window/background ---------- */
+.actor.sheet.vampire {
+  --input-text-color: var(--vtm5e-cs-text);
+}
+
+.actor.sheet.vampire .window-content {
+  background:
+    radial-gradient(ellipse 900px 500px at 92% 0%, rgba(224, 39, 44, 0.16), transparent 60%),
+    radial-gradient(ellipse 700px 400px at 0% 100%, rgba(122, 20, 20, 0.10), transparent 65%),
+    var(--vtm5e-cs-bg) !important;
+  color: var(--vtm5e-cs-text);
+}
+
+.actor.sheet.vampire input,
+.actor.sheet.vampire select,
+.actor.sheet.vampire textarea,
+.actor.sheet.vampire prose-mirror {
+  color: var(--vtm5e-cs-text);
+  background-color: var(--vtm5e-cs-bg-panel);
+  border-color: var(--vtm5e-cs-border);
+}
+
+.actor.sheet.vampire ::placeholder {
+  color: var(--vtm5e-cs-text-dim);
+}
+
+/* ---------- Header ---------- */
+.actor.sheet.vampire .actor-header {
+  background: linear-gradient(180deg, #1a0e0e 0%, var(--vtm5e-cs-bg) 100%) !important;
+  border-bottom: 2px solid var(--vtm5e-cs-red-mid);
+  padding: 10px 16px;
+}
+
+/* wod5e reserves a 45px left gutter on the header and every tab panel
+   (.actor.sheet .window-content .actor-header/.tab { margin-left: 45px })
+   for its original vertical icon-only sidebar, which absolutely-positioned
+   itself over that gutter. Our tab bar is horizontal now and was never
+   shifted to match, so that leftover gutter just reads as a dead black
+   strip down the left edge with the tab bar's own border stopping short
+   of it - zero it out entirely. */
+.actor.sheet.vampire .window-content .actor-header,
+.actor.sheet.vampire .window-content .tab {
+  margin-left: 0 !important;
+}
+
+/* Module-owned header template: identity+bane/compulsion/rouse row on top,
+   then a clean 2-row x 3-column stats block below, full width -
+   Health/Humanity/Blood Potency on row 1, Willpower/Hunger/Blood Resonance
+   on row 2 - replacing wod5e's original stacked layout. */
+.actor.sheet.vampire .actor-header.cs-header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: 6px 16px 4px;
+}
+
+.actor.sheet.vampire .cs-header-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 20px;
+}
+
+.actor.sheet.vampire .cs-header-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.actor.sheet.vampire .cs-header-subtitle {
+  margin-left: 92px;
+  /* .header-profile centers the 24px-tall charname inside the 76px-tall
+     portrait row, leaving ~26px of empty space below the name before this
+     sibling even starts - pull it up to sit snugly under the name instead
+     of under the portrait's bottom edge. */
+  margin-top: -25px;
+  font-family: var(--vtm5e-cs-font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--vtm5e-cs-red-bright);
+}
+
+/* Ghoul header's Domitor field - same position/typography as the Vampire
+   header's Clan/Predator subtitle line (cs-header-subtitle above), but an
+   editable text input instead of a clickable item-search span. */
+.actor.sheet.vampire .cs-domitor-field {
+  margin-left: 92px;
+  margin-top: -25px;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  font-family: var(--vtm5e-cs-font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.actor.sheet.vampire .cs-domitor-label {
+  color: var(--vtm5e-cs-text-dim);
+  white-space: nowrap;
+}
+
+.actor.sheet.vampire .cs-domitor-input {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px dotted var(--vtm5e-cs-text-dim);
+  color: var(--vtm5e-cs-red-bright);
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  padding: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  width: 160px;
+}
+
+.actor.sheet.vampire .cs-domitor-input:hover,
+.actor.sheet.vampire .cs-domitor-input:focus {
+  color: var(--vtm5e-cs-red-bright);
+}
+
+.actor.sheet.vampire .cs-clan-name {
+  cursor: pointer;
+}
+
+.actor.sheet.vampire .cs-clan-name.cs-clan-none {
+  opacity: 0.7;
+}
+
+.actor.sheet.vampire .cs-clan-name:hover {
+  text-decoration: underline;
+}
+
+.actor.sheet.vampire .cs-predator-name {
+  cursor: pointer;
+}
+
+.actor.sheet.vampire .cs-predator-name.cs-predator-none {
+  opacity: 0.7;
+}
+
+.actor.sheet.vampire .cs-predator-name:hover {
+  text-decoration: underline;
+}
+
+.actor.sheet.vampire .cs-header-topright {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Mottled red/black texture - layered radial blotches rather than a flat
+   fill, used on the nav bar and the bane/compulsion frame for a worn,
+   blood-stained parchment feel instead of a flat panel color. */
+.actor.sheet.vampire .cs-mottled-bg {
+  background-color: var(--vtm5e-cs-bg-panel);
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(122, 20, 20, 0.45) 0%, transparent 38%),
+    radial-gradient(circle at 82% 12%, rgba(58, 13, 13, 0.5) 0%, transparent 32%),
+    radial-gradient(circle at 55% 75%, rgba(224, 39, 44, 0.14) 0%, transparent 42%),
+    radial-gradient(circle at 92% 82%, rgba(122, 20, 20, 0.4) 0%, transparent 36%),
+    radial-gradient(circle at 22% 88%, rgba(58, 13, 13, 0.45) 0%, transparent 32%),
+    radial-gradient(circle at 65% 35%, rgba(224, 39, 44, 0.08) 0%, transparent 28%),
+    radial-gradient(circle at 5% 55%, rgba(58, 13, 13, 0.35) 0%, transparent 30%);
+}
+
+.actor.sheet.vampire .cs-bane-compulsion {
+  width: 260px;
+  max-width: 260px;
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 4px;
+  padding: 9px 14px;
+}
+
+.actor.sheet.vampire .cs-bc-line {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.actor.sheet.vampire .cs-bc-line:last-child {
+  margin-bottom: 0;
+}
+
+.actor.sheet.vampire .cs-bc-label {
+  font-family: var(--vtm5e-cs-font-display);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--vtm5e-cs-text-dim);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.actor.sheet.vampire .cs-bc-value {
+  color: var(--vtm5e-cs-text);
+  cursor: help;
+  border-bottom: 1px dotted var(--vtm5e-cs-text-dim);
+}
+
+.actor.sheet.vampire .cs-bc-value.cs-bc-none {
+  color: var(--vtm5e-cs-text-dim);
+  opacity: 0.7;
+  cursor: default;
+  border-bottom: none;
+}
+
+.actor.sheet.vampire .cs-bc-input,
+.actor.sheet.vampire .cs-bc-select {
+  background: transparent !important;
+  border: none !important;
+  color: var(--vtm5e-cs-text);
+  font-size: 12px;
+  padding: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  cursor: pointer;
+}
+
+.actor.sheet.vampire .cs-bc-select {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 1 1 auto;
+}
+
+.actor.sheet.vampire .cs-bc-input {
+  width: 90px;
+}
+
+.actor.sheet.vampire .cs-bc-input::placeholder {
+  color: var(--vtm5e-cs-text-dim);
+  opacity: 0.7;
+}
+
+.actor.sheet.vampire .cs-bc-input:hover,
+.actor.sheet.vampire .cs-bc-select:hover {
+  color: var(--vtm5e-cs-red-bright);
+}
+
+.actor.sheet.vampire .cs-bc-input:focus {
+  cursor: text;
+}
+
+.actor.sheet.vampire .cs-quickrolls {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+}
+
+.actor.sheet.vampire .cs-roll-badge {
+  flex-direction: column !important;
+  gap: 1px;
+  line-height: 1.1;
+}
+
+.actor.sheet.vampire .cs-roll-badge-line1 {
+  font-size: 10px;
+  opacity: 0.85;
+}
+
+.actor.sheet.vampire .cs-roll-badge-line2 {
+  font-size: 11px;
+}
+
+.actor.sheet.vampire .cs-header-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.actor.sheet.vampire .cs-stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+/* Mortal's header only has Health + Willpower (no Humanity/third stat) -
+   two even columns instead of three, still spread across the full header
+   width to match the Vampire/Ghoul row's look. */
+.actor.sheet.vampire .cs-stat-row.cs-stat-row-2col {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ---------- Type banner (bottom bar reading VAMPIRE/GHOUL/MORTAL/etc) ----------
+   Colors match the node-type legend already established in
+   vtm5e-domainmap/scripts/relationship-data.js (Kindred/Human/Ghoul/Werewolf),
+   so a character's sheet banner and its relationship-map node read as the
+   same color language. `.actor.sheet.vampire.ghoul` (both classes on one
+   selector) intentionally outranks the plain `.actor.sheet.vampire` rule's
+   specificity so Ghoul doesn't just inherit Vampire's red. Hunter has no
+   assigned color yet - left on wod5e's stock hunter-color-1 until that's
+   decided. */
+.actor.sheet.vampire .sheet-banner {
+  background-color: #c0392b !important;
+  color: #fff !important;
+}
+
+.actor.sheet.vampire.ghoul .sheet-banner {
+  background-color: #6a5acd !important;
+  color: #fff !important;
+}
+
+.actor.sheet.mortal .sheet-banner {
+  background-color: #4a90d9 !important;
+  color: #fff !important;
+}
+
+.actor.sheet.werewolf .sheet-banner {
+  background-color: #2f5f8f !important;
+  color: #fff !important;
+}
+
+/* ---------- Werewolf header extras (Rage roll icon, frenzy warning) ---------- */
+.actor.sheet.vampire .cs-stat-rage .rage-button {
+  display: inline-flex;
+  width: auto;
+  min-width: 0;
+  padding: 0;
+  margin-left: 4px;
+  background: none;
+  border: none;
+  font-size: 9px;
+  opacity: 0.55;
+  vertical-align: middle;
+}
+
+.actor.sheet.vampire .cs-stat-rage .rage-button:hover {
+  opacity: 1;
+}
+
+.actor.sheet.vampire .cs-frenzy-warning {
+  color: var(--vtm5e-cs-red-bright);
+}
+
+/* No card background/border here - just label + dots/boxes inline on the
+   bare header background, matching the reference exactly (that per-row
+   boxed-card treatment is only for the Attributes/Skills tab body, not the
+   header trackers). */
+.actor.sheet.vampire .cs-stat {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+}
+
+.actor.sheet.vampire .cs-stat .flexcol {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.actor.sheet.vampire .cs-stat .resource,
+.actor.sheet.vampire .cs-stat .resource-content {
+  background: none !important;
+  border: none !important;
+  margin-bottom: 0 !important;
+  min-height: 0 !important;
+}
+
+/* wod5e's base .resource-value sets align-self:flex-end (it's normally the
+   bottom item of a taller field-section column) - inside our single-row
+   cs-stat layout that pins it to the row's bottom edge instead of centering
+   with the label beside it, reading as "dots sit below the text". */
+.actor.sheet.vampire .cs-stat .resource-value {
+  align-self: center;
+}
+
+/* The +/- resource-adjust controls and inline dice-roll icons are useful
+   and stay clickable, but reference's header labels read as plain text -
+   mute them down so they don't compete visually with the label. */
+.actor.sheet.vampire .cs-stat .resource-control,
+.actor.sheet.vampire .cs-stat .system-rollable i,
+.actor.sheet.vampire .cs-stat .remorse-roll i {
+  font-size: 9px;
+  opacity: 0.55;
+}
+
+/* Tight-pack the header dot/box tracker rows instead of letting them
+   space-between-stretch across the full column width, and shrink them
+   below the 14px wod5e base to match the reference's smaller header-only
+   trackers (tab-body dot trackers stay full-size). */
+.actor.sheet.vampire .cs-stat .resource-content.flex-between {
+  justify-content: flex-start !important;
+  gap: 2px;
+}
+
+.actor.sheet.vampire .cs-stat .resource-value-step,
+.actor.sheet.vampire .cs-stat .resource-value-empty,
+.actor.sheet.vampire .cs-stat .resource-counter-step {
+  width: 10px !important;
+  height: 10px !important;
+}
+
+/* Health/Willpower read noticeably smaller than the rest of the header
+   trackers at the shared 10px/9px sizing - bump just these two ~1.75x. */
+.actor.sheet.vampire .cs-stat-health .field-header,
+.actor.sheet.vampire .cs-stat-willpower .field-header {
+  font-size: 21px;
+  font-weight: 900;
+  color: var(--vtm5e-cs-text);
+}
+
+.actor.sheet.vampire .cs-stat-health .resource-control,
+.actor.sheet.vampire .cs-stat-willpower .resource-control {
+  font-size: 13px;
+}
+
+.actor.sheet.vampire .cs-stat-health .resource-counter-step,
+.actor.sheet.vampire .cs-stat-willpower .resource-counter-step,
+.actor.sheet.vampire .cs-stat-humanity .resource-counter-step,
+.actor.sheet.vampire .cs-stat-hunger .resource-value-step,
+.actor.sheet.vampire .cs-stat-hunger .resource-value-empty,
+.actor.sheet.vampire .cs-stat-potency .resource-value-step,
+.actor.sheet.vampire .cs-stat-potency .resource-value-empty {
+  width: 17px !important;
+  height: 17px !important;
+}
+
+.actor.sheet.vampire .cs-resonance-value {
+  cursor: default;
+  color: var(--vtm5e-cs-red-bright);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.actor.sheet.vampire .cs-resonance-value.cs-resonance-none {
+  color: var(--vtm5e-cs-text-dim);
+  opacity: 0.7;
+}
+
+.actor.sheet.vampire .actor-header .field-header,
+.actor.sheet.vampire .actor-header .resource-label {
+  color: var(--vtm5e-cs-text-dim);
+  font-family: var(--vtm5e-cs-font-display);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 9px;
+}
+
+/* Vanilla wod5e renders this as a 240x200 hero image with the name
+   absolutely-positioned to overlay its bottom edge (confirmed in
+   actor-sheets.less) - that overlap is original layout, not something we
+   introduced. Reference design wants a small circular avatar with the
+   name sitting cleanly beside it instead, so this overrides the sizing
+   AND the overlay positioning, not just the border. */
+.actor.sheet.vampire .header-profile {
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 16px;
+  position: static !important;
+}
+
+.actor.sheet.vampire .header-profile-img {
+  width: 76px !important;
+  height: 76px !important;
+  margin-bottom: 0 !important;
+  flex-shrink: 0;
+}
+
+.actor.sheet.vampire .header-profile-img .profile-img {
+  width: 76px !important;
+  height: 76px !important;
+  max-width: 76px !important;
+  max-height: 76px !important;
+  min-width: 76px !important;
+  min-height: 76px !important;
+  border-radius: 50%;
+  border: 2px solid var(--vtm5e-cs-red-mid);
+  box-shadow: 0 0 10px rgba(224, 39, 44, 0.35);
+  object-fit: cover;
+}
+
+.actor.sheet.vampire .header-profile .name-field {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  align-items: flex-start !important;
+}
+
+.actor.sheet.vampire .charname,
+.actor.sheet.vampire input.charname {
+  font-family: var(--vtm5e-cs-font-display);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 24px;
+  letter-spacing: 0.02em;
+  color: var(--vtm5e-cs-text);
+  text-shadow: 0 0 10px rgba(224, 39, 44, 0.25);
+  background: transparent;
+  border: none;
+  white-space: nowrap;
+  max-width: 230px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The "reset to 0" click-target dot that precedes every dot-tracker row -
+   real wod5e feature (present in every theme, not something we added).
+   Reference doesn't show it and Jake wants it gone outright rather than
+   just faded - removed everywhere on this sheet. Stats can still be reset
+   to 0 the normal way (click the currently-lowest filled dot). */
+.actor.sheet.vampire .resource-value-empty {
+  display: none !important;
+}
+
+/* ---------- Section headers / dividers ----------
+   wod5e's base .resource-header is a plain 20pt block-level div wrapping a
+   .header-label - that base font-size is the reason "ATTRIBUTES"/"SKILLS"
+   rendered much larger and plainer than the reference's compact, muted-red,
+   flanked-by-thin-lines divider style. Overriding size/color here and
+   adding a lightweight flanking-line flourish via pseudo-elements instead
+   of sourcing custom ornament art. */
+.actor.sheet.vampire .resource-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  font-family: var(--vtm5e-cs-font-display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--vtm5e-cs-red-bright);
+  border-bottom: none;
+  text-align: center;
+  text-wrap: wrap;
+  padding-bottom: 0;
+  margin-bottom: 6px;
+}
+
+.actor.sheet.vampire .resource-header::before,
+.actor.sheet.vampire .resource-header::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--vtm5e-cs-border);
+}
+
+.actor.sheet.vampire .resource-header .header-label {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.actor.sheet.vampire .resource-header .header-label::before,
+.actor.sheet.vampire .resource-header .header-label::after {
+  content: "\2726";
+  font-size: 10px;
+  color: var(--vtm5e-cs-red-mid);
+}
+
+/* ---------- Attribute/Skill rows - discrete "pill" cards with breathing
+   room between them, matching the reference (currently these were bare
+   text+dots directly on the shared panel background with zero separation
+   between rows, which is what read as cramped). ---------- */
+.actor.sheet.vampire .stats-list .attribute,
+.actor.sheet.vampire .stats-list .skill {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  padding: 3px 8px;
+  margin-bottom: 2px;
+}
+
+.actor.sheet.vampire .stats-list .attribute:last-child,
+.actor.sheet.vampire .stats-list .skill:last-child {
+  margin-bottom: 0;
+}
+
+.actor.sheet.vampire .field-header {
+  color: var(--vtm5e-cs-text-dim);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ---------- Dot trackers (Attributes/Skills/Disciplines/Blood Potency/Hunger) ---------- */
+.actor.sheet.vampire .resource-value .resource-value-step,
+.actor.sheet.vampire .resource-value .resource-value-empty {
+  border: 1px solid var(--vtm5e-cs-border);
+  background-color: var(--vtm5e-cs-bg-panel);
+}
+
+.actor.sheet.vampire .resource-value .resource-value-step.active {
+  background-color: var(--vtm5e-cs-red-bright) !important;
+  border-color: var(--vtm5e-cs-red-bright);
+  box-shadow: 0 0 4px rgba(224, 39, 44, 0.6);
+}
+
+/* ---------- Box trackers (Health/Willpower) - square, diagonal damage marks ---------- */
+.actor.sheet.vampire .resource-counter .resource-counter-step {
+  border: 1px solid var(--vtm5e-cs-border);
+  background-color: var(--vtm5e-cs-bg-panel);
+}
+
+.actor.sheet.vampire .resource-counter .resource-counter-step[data-state="/"] {
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    transparent 43%,
+    var(--vtm5e-cs-red-bright) 45%,
+    var(--vtm5e-cs-red-bright) 55%,
+    transparent 57%,
+    transparent 100%
+  ), var(--vtm5e-cs-bg-panel);
+}
+
+.actor.sheet.vampire .resource-counter .resource-counter-step[data-state="x"] {
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    transparent 43%,
+    var(--vtm5e-cs-red-bright) 45%,
+    var(--vtm5e-cs-red-bright) 55%,
+    transparent 57%,
+    transparent 100%
+  ),
+  linear-gradient(
+    135deg,
+    transparent 0%,
+    transparent 43%,
+    var(--vtm5e-cs-red-bright) 45%,
+    var(--vtm5e-cs-red-bright) 55%,
+    transparent 57%,
+    transparent 100%
+  ), var(--vtm5e-cs-bg-panel);
+}
+
+/* Humanity - filled squares (data-state "-" = filled value, "/" = stain).
+   Confirmed the fill color already comes from --vampire-color-3 (#f51f1f)
+   via wod5e's own vtm/styling/vampire-styling.less when the system's
+   "vampire theme" setting is on; this rule makes it work even if that
+   setting is OFF, and keeps our red consistent with the rest of this sheet. */
+.actor.sheet.vampire .resource-counter .resource-counter-step[data-state="-"] {
+  background-color: var(--vtm5e-cs-red-bright) !important;
+  border-color: var(--vtm5e-cs-red-bright);
+}
+
+/* ---------- Tab bar (horizontal text labels, module-owned template) ---------- */
+.actor.sheet.vampire .sheet-tabs {
+  background-color: var(--vtm5e-cs-bg) !important;
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(122, 20, 20, 0.45) 0%, transparent 38%),
+    radial-gradient(circle at 82% 12%, rgba(58, 13, 13, 0.5) 0%, transparent 32%),
+    radial-gradient(circle at 55% 75%, rgba(224, 39, 44, 0.14) 0%, transparent 42%),
+    radial-gradient(circle at 92% 82%, rgba(122, 20, 20, 0.4) 0%, transparent 36%),
+    radial-gradient(circle at 22% 88%, rgba(58, 13, 13, 0.45) 0%, transparent 32%),
+    radial-gradient(circle at 65% 35%, rgba(224, 39, 44, 0.08) 0%, transparent 28%),
+    radial-gradient(circle at 5% 55%, rgba(58, 13, 13, 0.35) 0%, transparent 30%) !important;
+  border-bottom: 2px solid var(--vtm5e-cs-red-mid);
+}
+
+.actor.sheet.vampire .cs-tabs-container {
+  position: static !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.actor.sheet.vampire .cs-tab-bar {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch;
+  justify-content: center;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 16px;
+}
+
+.actor.sheet.vampire .cs-tab {
+  display: flex !important;
+  width: auto !important;
+  height: auto !important;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px !important;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  font-size: inherit !important;
+}
+
+.actor.sheet.vampire .cs-tab-label {
+  font-family: var(--vtm5e-cs-font-display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--vtm5e-cs-text-dim);
+  white-space: nowrap;
+}
+
+.actor.sheet.vampire .cs-tab:hover .cs-tab-label {
+  color: var(--vtm5e-cs-text);
+}
+
+.actor.sheet.vampire .cs-tab.active {
+  border-bottom-color: var(--vtm5e-cs-red-bright);
+}
+
+.actor.sheet.vampire .cs-tab.active .cs-tab-label {
+  color: var(--vtm5e-cs-text);
+  text-shadow: 0 0 8px rgba(224, 39, 44, 0.5);
+}
+
+/* ---------- Tab body panels / item lists ---------- */
+.actor.sheet.vampire .item-list .category,
+.actor.sheet.vampire .item-list .item,
+.actor.sheet.vampire .resource {
+  background-color: var(--vtm5e-cs-bg-panel) !important;
+  border-color: var(--vtm5e-cs-border) !important;
+}
+
+/* Reference doesn't box the whole Attributes/Skills group - just the
+   individual rows (handled separately below) - so the group wrapper itself
+   stays transparent instead of getting the shared panel background/border. */
+.actor.sheet.vampire .stats-container,
+.actor.sheet.vampire .stats-container .stats-footer {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+
+/* ---------- Attributes & Skills (module-owned template) - Conditions and
+   Custom Rolls moved to full-width blocks below instead of a side column,
+   Custom Rolls stacked beneath Conditions (2026-07-28, re-added). ---------- */
+.actor.sheet.vampire .cs-stats-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 8px 16px 16px;
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+.actor.sheet.vampire .cs-conditions-list .items-list,
+.actor.sheet.vampire .cs-customrolls-list .items-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.actor.sheet.vampire .cs-conditions-list .item,
+.actor.sheet.vampire .cs-customrolls-list .item {
+  width: auto;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 3px;
+  padding: 3px 8px;
+}
+
+/* ---------- Rouse / Frenzy circular badge buttons ----------
+   Jake-supplied splattered blood-ring art (bloodcircle.png, resized from a
+   2500px source down to 300px) IS the button now - no separate solid fill/
+   border circle underneath, just the art with the label text centered on
+   top, same fixed size/shape for all three button states. wod5e's own base
+   CSS caps .rouse-button specifically at max-width:35px/height:35px with a
+   -5px top margin (a leftover from its old icon-only design) - that's why
+   Rouse was rendering smaller than Frenzy despite matching width/height
+   here, so those get explicitly neutralized below. */
+.actor.sheet.vampire button.rouse-button,
+.actor.sheet.vampire button.frenzy-roll,
+.actor.sheet.vampire button.end-frenzy {
+  width: 80px !important;
+  height: 80px !important;
+  min-width: 80px !important;
+  min-height: 80px !important;
+  max-width: 80px !important;
+  max-height: 80px !important;
+  margin-top: 0 !important;
+  background: url("images/bloodcircle.png") center / contain no-repeat;
+  border: none;
+  border-radius: 0;
+  color: var(--vtm5e-cs-text);
+  font-family: var(--vtm5e-cs-font-display);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: none;
+}
+
+.actor.sheet.vampire button.rouse-button:hover,
+.actor.sheet.vampire button.frenzy-roll:hover,
+.actor.sheet.vampire button.end-frenzy:hover {
+  filter: brightness(1.35);
+}
+
+/* ---------- Clan / general resource boxes ---------- */
+.actor.sheet.vampire .header-fields .resource-content {
+  background-color: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-border);
+  color: var(--vtm5e-cs-text);
+}
+
+/* ---------- Merits & Flaws (module-owned template) - 4 columns ---------- */
+.actor.sheet.vampire .cs-mf-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  padding: 12px 16px;
+  align-items: start;
+}
+
+.actor.sheet.vampire .cs-mf-column {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.actor.sheet.vampire .cs-mf-column-header {
+  font-family: var(--vtm5e-cs-font-display);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 13px;
+  color: var(--vtm5e-cs-text);
+  margin-bottom: 2px;
+}
+
+.actor.sheet.vampire .cs-mf-dots .resource-value-step,
+.actor.sheet.vampire .cs-mf-dots .resource-value-empty {
+  width: 10px !important;
+  height: 10px !important;
+}
+
+/* ---------- Concept & Lore (module-owned template) ---------- */
+.actor.sheet.vampire .cs-cl-scroll {
+  padding: 12px 20px 24px;
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+.actor.sheet.vampire .cs-cl-divider {
+  margin-top: 18px;
+  margin-bottom: 10px;
+}
+
+.actor.sheet.vampire .cs-cl-divider:first-child {
+  margin-top: 0;
+}
+
+.actor.sheet.vampire .cs-cl-field {
+  margin-bottom: 12px;
+}
+
+.actor.sheet.vampire .cs-cl-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.actor.sheet.vampire .cs-cl-row .cs-cl-field {
+  margin-bottom: 0;
+}
+
+.actor.sheet.vampire .cs-cl-row-top {
+  align-items: start;
+}
+
+/* Hunter's read-only Redemption/Creed Fields text (pulled from whichever
+   Drive/Creed item is equipped, not directly editable here). */
+.actor.sheet.vampire .cs-cl-readonly {
+  display: block;
+  color: var(--vtm5e-cs-text-dim);
+  font-style: italic;
+  padding: 2px 0;
+  min-height: 1.2em;
+}
+
+/* ---------- Hunter header extras (Drive/Creed/Despair box) ---------- */
+.actor.sheet.vampire .cs-bc-value-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--vtm5e-cs-text);
+}
+
+.actor.sheet.vampire .cs-bc-value-wrap .search-data-item,
+.actor.sheet.vampire .cs-bc-value-wrap .add-data-item,
+.actor.sheet.vampire .cs-bc-value-wrap .edit-data-item {
+  color: var(--vtm5e-cs-text-dim);
+  font-size: 10px;
+}
+
+.actor.sheet.vampire .cs-bc-value-wrap .search-data-item:hover,
+.actor.sheet.vampire .cs-bc-value-wrap .add-data-item:hover,
+.actor.sheet.vampire .cs-bc-value-wrap .edit-data-item:hover {
+  color: var(--vtm5e-cs-red-bright);
+}
+
+.actor.sheet.vampire .cs-despair-line {
+  align-items: center;
+}
+
+.actor.sheet.vampire .despair-toggle {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid var(--vtm5e-cs-text-dim);
+  cursor: pointer;
+}
+
+.actor.sheet.vampire .despair-toggle.active {
+  background: var(--vtm5e-cs-red-bright);
+  border-color: var(--vtm5e-cs-red-bright);
+  box-shadow: 0 0 6px var(--vtm5e-cs-red-bright);
+}
+
+/* ---------- Equipment tab (module-owned template) ---------- */
+.actor.sheet.vampire .cs-eq-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 12px 16px;
+}
+
+.actor.sheet.vampire .cs-eq-sidebar {
+  flex: 0 0 260px;
+  min-width: 0;
+}
+
+.actor.sheet.vampire .cs-eq-list {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.actor.sheet.vampire .cs-currency-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background-color: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 3px;
+}
+
+.actor.sheet.vampire .cs-currency-symbol {
+  color: var(--vtm5e-cs-red-bright);
+  font-family: var(--vtm5e-cs-font-display);
+  font-weight: 700;
+}
+
+.actor.sheet.vampire .cs-currency-input {
+  flex: 1;
+  background: transparent !important;
+  border: none !important;
+  color: var(--vtm5e-cs-text);
+  font-size: 14px;
+  padding: 0 !important;
+}
+
+/* ---------- Disciplines tab (module-owned template) - flat list: every
+   owned power is its own expandable row grouped under its discipline,
+   replacing wod5e's stock select-then-reveal two-pane layout. ---------- */
+.actor.sheet.vampire .cs-disc-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 10px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.actor.sheet.vampire .cs-disc-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.actor.sheet.vampire .cs-disc-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 4px 4px;
+}
+
+.actor.sheet.vampire .cs-disc-name {
+  font-family: var(--vtm5e-cs-font-display);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 13px;
+  color: var(--vtm5e-cs-text);
+}
+
+.actor.sheet.vampire .cs-disc-dots .resource-value-step,
+.actor.sheet.vampire .cs-disc-dots .resource-value-empty {
+  width: 11px !important;
+  height: 11px !important;
+}
+
+.actor.sheet.vampire .cs-disc-header-controls {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.actor.sheet.vampire .cs-disc-header:hover .cs-disc-header-controls {
+  opacity: 0.6;
+}
+
+.actor.sheet.vampire .cs-disc-header-controls a {
+  font-size: 10px;
+  color: var(--vtm5e-cs-text-dim);
+}
+
+.actor.sheet.vampire .cs-disc-header-controls a:hover {
+  color: var(--vtm5e-cs-red-bright);
+}
+
+/* ---------- Shared expandable-row component (Disciplines powers, Merits &
+   Flaws items) - one row per item, click the summary to reveal its full
+   description below. Expand/collapse is a plain class toggle owned
+   entirely by this module (toggleExpandRow in vampire-actor-sheet.js)
+   instead of wod5e's generic scrollHeight-measuring toggleCollapse action,
+   which had no version that worked here: reading max-height/overflow left
+   content visibly leaking past the clip no matter what, and display:none
+   always reports scrollHeight 0 so wod5e's own logic could never re-open
+   it. A boring class toggle sidesteps both failure modes. ---------- */
+.actor.sheet.vampire .cs-expand-row {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 3px;
+}
+
+.actor.sheet.vampire .cs-expand-summary {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.actor.sheet.vampire .cs-expand-spacer {
+  flex: 1 1 auto;
+}
+
+.actor.sheet.vampire .cs-row-icon {
+  flex-shrink: 0;
+  color: var(--vtm5e-cs-text-dim);
+  font-size: 12px;
+}
+
+.actor.sheet.vampire .cs-row-icon:hover {
+  color: var(--vtm5e-cs-red-bright);
+}
+
+.actor.sheet.vampire .cs-expand-caret {
+  flex-shrink: 0;
+  color: var(--vtm5e-cs-text-dim);
+  font-size: 10px;
+  transition: transform 0.15s;
+}
+
+.actor.sheet.vampire .cs-expand-row.cs-expanded .cs-expand-caret {
+  color: var(--vtm5e-cs-red-bright);
+  transform: rotate(180deg);
+}
+
+.actor.sheet.vampire .cs-expand-detail {
+  display: none;
+  padding: 10px 14px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--vtm5e-cs-text-dim);
+  border-top: 1px solid var(--vtm5e-cs-border);
+}
+
+.actor.sheet.vampire .cs-expand-row.cs-expanded .cs-expand-detail {
+  display: block;
+}
+
+/* ---------- Disciplines power rows - fields specific to powers (cost/
+   level/rouse) layered on top of the shared expand-row component ---------- */
+.actor.sheet.vampire .cs-power-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--vtm5e-cs-text);
+  font-size: 12px;
+}
+
+/* Stack-count prefix on an equipment row (e.g. "x3 9mm Magazine (15rd)") -
+   only rendered at all when Quantity > 1, see equipment.hbs. Unscoped
+   (unlike .cs-power-name above) since equipment.hbs is shared across every
+   actor type's sheet (Vampire/Ghoul/Mortal/Hunter/Werewolf), not just Vampire. */
+.cs-item-quantity {
+  color: var(--vtm5e-cs-red-bright);
+  font-weight: 700;
+}
+
+.actor.sheet.vampire .cs-power-cost {
+  flex-shrink: 0;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--vtm5e-cs-text-dim);
+}
+
+.actor.sheet.vampire .cs-power-level {
+  flex-shrink: 0;
+  min-width: 12px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--vtm5e-cs-text);
+  font-size: 12px;
+}
+
+.actor.sheet.vampire .cs-power-rouse {
+  margin-top: 8px;
+  font-weight: 700;
+  color: var(--vtm5e-cs-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------- Experience tab (module-owned template) ---------- */
+.actor.sheet.vampire .cs-exp-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 20px 24px;
+}
+
+.actor.sheet.vampire .cs-exp-divider {
+  margin-top: 8px;
+}
+
+.actor.sheet.vampire .cs-exp-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.actor.sheet.vampire .cs-exp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.actor.sheet.vampire .cs-exp-input {
+  box-sizing: border-box;
+  width: 100%;
+  /* wod5e's base input[type="number"] { max-width: 35px; min-width: 35px }
+     is unscoped and wins for those two properties regardless of our own
+     width:100% here (setting width never contests max-width/min-width -
+     same gotcha as the old rouse-button sizing bug), so both need an
+     explicit override. */
+  max-width: 100% !important;
+  min-width: 0 !important;
+  background-color: var(--vtm5e-cs-bg-panel) !important;
+  border: 1px solid var(--vtm5e-cs-border) !important;
+  color: var(--vtm5e-cs-text);
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  padding: 10px !important;
+}
+
+.actor.sheet.vampire .cs-exp-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.actor.sheet.vampire .cs-exp-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background-color: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-border);
+  color: var(--vtm5e-cs-text);
+  font-family: var(--vtm5e-cs-font-display);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.actor.sheet.vampire .cs-exp-btn:hover {
+  border-color: var(--vtm5e-cs-red-bright);
+  color: var(--vtm5e-cs-text);
+}
+
+.actor.sheet.vampire .cs-exp-history {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.actor.sheet.vampire .cs-exp-history-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 3px;
+}
+
+.actor.sheet.vampire .cs-exp-history-name {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--vtm5e-cs-text);
+  font-size: 12px;
+}
+
+.actor.sheet.vampire .cs-exp-history-value {
+  flex-shrink: 0;
+  font-weight: 700;
+  color: var(--vtm5e-cs-text-dim);
+  font-size: 12px;
+}
+
+.actor.sheet.vampire .cs-exp-history-value.cs-exp-gain {
+  color: #6cbf6c;
+}
+
+.actor.sheet.vampire .cs-exp-history-value.cs-exp-spend {
+  color: var(--vtm5e-cs-red-bright);
+}
+
+/* ---------- Notes tab - CSS-only ---------- */
+.actor.sheet.vampire .note-container.public-notepad,
+.actor.sheet.vampire .note-container.private-notepad {
+  background-color: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-border);
+}

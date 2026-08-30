@@ -1,0 +1,70 @@
+{{!-- VtM5e Character Sheet Reskin - Equipment: Cash on Hand tracker
+      (flags.vtm5e-charactersheet.currency - wod5e has no wealth field) and
+      notes on the left, owned equipment grouped by type on the right using
+      the same cs-expand-row pattern as Disciplines/Merits & Flaws. --}}
+<section class="tab {{tab.cssClass}}" data-tab="{{tab.id}}" data-group="{{tab.group}}">
+    <div class="cs-eq-layout">
+        <div class="cs-eq-sidebar">
+            <div class="cs-cl-field">
+                <label class="resource-label field-header">Cash on Hand</label>
+                <div class="cs-currency-content">
+                    <span class="cs-currency-symbol">$</span>
+                    <input type="number" step="0.01" class="cs-currency-input" name="flags.vtm5e-charactersheet.currency" value="{{currency}}"/>
+                </div>
+            </div>
+            <div class="cs-cl-field">
+                <label class="resource-label field-header">{{localize "WOD5E.EquipmentList.EquipmentNotes"}}</label>
+                <div class="description-content resource">
+                    <prose-mirror name="system.equipment" value="{{equipment}}" toggled="true" compact="true">{{{enrichedEquipment}}}</prose-mirror>
+                </div>
+            </div>
+        </div>
+
+        <div class="cs-eq-list">
+            {{#each equipmentItems as |equipment key|}}
+                <div class="cs-disc-group">
+                    <div class="cs-mf-column-header">{{localize (concat 'TYPES.Item.' key)}}</div>
+                    {{#each equipment as |item|}}
+                        <div class="cs-expand-row" data-drag="true" data-item-id="{{item.id}}" data-document-uuid="{{item.uuid}}" data-type="Item">
+                            <div class="cs-expand-summary" data-action="toggleExpandRow">
+                                {{#ifnoteq ../../baseActorType 'group'}}
+                                    {{#if item.system.dicepool}}
+                                        {{#if (isNotEmpty item.system.dicepool)}}
+                                            <a class="cs-row-icon rollable-item" data-action="rollItem" data-item-uuid="{{item.uuid}}" title="{{localize 'WOD5E.RollList.Label'}}">
+                                                <i class="fa-solid fa-dice-d10"></i>
+                                            </a>
+                                        {{/if}}
+                                    {{/if}}
+                                {{/ifnoteq}}
+                                <span class="cs-power-name">
+                                    {{#ifgr item.system.quantity 1}}<span class="cs-item-quantity">&times;{{item.system.quantity}}</span> {{/ifgr}}
+                                    {{item.name}}
+                                    {{#if item.system.uses.enabled}} ({{item.system.uses.current}}/{{item.system.uses.max}}){{/if}}
+                                </span>
+                                <span class="cs-expand-spacer"></span>
+                                {{#if item.system.uses.enabled}}
+                                    <a class="cs-row-icon" data-action="expendItemUse" data-item-id="{{item._id}}" title="{{localize 'WOD5E.ItemsList.ExpendUse'}}">
+                                        <i class="fa-solid fa-minus"></i>
+                                    </a>
+                                    <a class="cs-row-icon" data-action="restoreItemUses" data-item-id="{{item._id}}" title="{{localize 'WOD5E.ItemsList.ResetUses'}}">
+                                        <i class="fa-solid fa-rotate-left"></i>
+                                    </a>
+                                {{/if}}
+                                <a class="cs-row-icon" data-action="itemChat" data-item-id="{{item._id}}" title="{{localize 'WOD5E.ItemsList.ShowToChat'}}">
+                                    <i class="fas fa-comment-alt"></i>
+                                </a>
+                                <a class="cs-row-icon" data-action="itemDelete" data-item-id="{{item._id}}" title="{{localize 'WOD5E.Delete'}}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                <span class="cs-expand-caret"><i class="fas fa-chevron-down"></i></span>
+                            </div>
+                            <div class="cs-expand-detail">
+                                {{{item.system.enrichedDescription}}}
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</section>

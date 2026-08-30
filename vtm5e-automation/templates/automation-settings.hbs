@@ -1,0 +1,45 @@
+<div class="vtm5e-automation-settings-body">
+  <nav class="vtm5e-automation-settings-tabs">
+    <button type="button" class="tab-nav active" data-tab="npc">NPC</button>
+    <button type="button" class="tab-nav" data-tab="player">Player</button>
+    <button type="button" class="tab-nav" data-tab="general">General</button>
+  </nav>
+
+  <section class="tab-panel" data-tab="npc">
+    <p class="tab-intro">Automation for actors controlled only by the GM.</p>
+    {{#each steps}}
+    <div class="form-group">
+      <label>{{this.label}}</label>
+      <select name="config.npc.{{this.key}}">
+        {{selectOptions this.choices selected=this.npcValue}}
+      </select>
+      <p class="hint">{{this.hint}}</p>
+    </div>
+    {{/each}}
+  </section>
+
+  <section class="tab-panel" data-tab="player" hidden>
+    <p class="tab-intro">Automation for actors an active non-GM player owns.</p>
+    {{#each steps}}
+    <div class="form-group">
+      <label>{{this.label}}</label>
+      <select name="config.player.{{this.key}}">
+        {{selectOptions this.choices selected=this.playerValue}}
+      </select>
+      <p class="hint">{{this.hint}}</p>
+    </div>
+    {{/each}}
+  </section>
+
+  <section class="tab-panel" data-tab="general" hidden>
+    <p class="tab-intro">Presets overwrite every NPC and Player toggle above at once.</p>
+    <div class="vtm5e-automation-presets">
+      {{#each presets}}
+      <button type="button" class="preset-button" data-action="applyPreset" data-preset="{{this.key}}">
+        <span class="preset-label">{{this.label}}</span>
+        <span class="preset-hint">{{this.hint}}</span>
+      </button>
+      {{/each}}
+    </div>
+  </section>
+</div>

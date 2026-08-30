@@ -1,0 +1,71 @@
+{{!-- VtM5e Character Sheet Reskin - Edges: flat list instead of wod5e's
+      stock select-then-reveal two-pane layout, same treatment Disciplines
+      got. Edges have two owned-item tiers instead of Discipline's one:
+      Perks (passive, descriptive only - no roll) and Edge Pools (the actual
+      rollable dice pools). Both render as expandable rows under their Edge;
+      Edge Pools get a roll icon, Perks don't (wod5e's own perk-sheet has no
+      dicepool field to roll). --}}
+<section class="tab {{tab.cssClass}}" data-tab="{{tab.id}}" data-group="{{tab.group}}">
+    <div class="cs-disc-scroll">
+        {{#each edges as |edge edgeKey|}}
+            {{#if edge.visible}}
+                <div class="cs-disc-group">
+                    <div class="cs-disc-header">
+                        <span class="cs-disc-name">{{edge.displayName}}</span>
+                        <div class="item-controls cs-disc-header-controls">
+                            <a class="item-control discipline-chat" data-action="edgeChat" title="{{localize 'WOD5E.ItemsList.ShowToChat'}}" data-edge="{{edgeKey}}">
+                                <i class="fas fa-comment-alt"></i>
+                            </a>
+                            {{#if (eq edge.perks.length 0)}}
+                                <a class="item-control discipline-delete" data-action="removeEdge" title="{{localize 'WOD5E.Delete'}}" data-edge="{{edgeKey}}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            {{/if}}
+                        </div>
+                    </div>
+
+                    {{#each edge.perks as |perk|}}
+                        <div class="cs-expand-row" data-drag="true" data-item-id="{{perk.id}}" data-document-uuid="{{perk.uuid}}" data-type="Item">
+                            <div class="cs-expand-summary" data-action="toggleExpandRow">
+                                <span class="cs-power-name">{{perk.name}}</span>
+                                <span class="cs-expand-spacer"></span>
+                                <a class="cs-row-icon" data-action="itemChat" data-item-id="{{perk._id}}" title="{{localize 'WOD5E.ItemsList.ShowToChat'}}">
+                                    <i class="fas fa-comment-alt"></i>
+                                </a>
+                                <a class="cs-row-icon" data-action="itemDelete" data-item-id="{{perk._id}}" title="{{localize 'WOD5E.Delete'}}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                <span class="cs-expand-caret"><i class="fas fa-chevron-down"></i></span>
+                            </div>
+                            <div class="cs-expand-detail">
+                                {{{perk.system.enrichedDescription}}}
+                            </div>
+                        </div>
+                    {{/each}}
+
+                    {{#each edge.pools as |pool|}}
+                        <div class="cs-expand-row" data-drag="true" data-item-id="{{pool.id}}" data-document-uuid="{{pool.uuid}}" data-type="Item">
+                            <div class="cs-expand-summary" data-action="toggleExpandRow">
+                                <a class="cs-row-icon rollable-item" data-action="rollItem" data-item-uuid="{{pool.uuid}}" title="{{localize 'WOD5E.RollList.Label'}}">
+                                    <i class="fa-solid fa-dice-d10"></i>
+                                </a>
+                                <span class="cs-power-name">{{pool.name}}</span>
+                                <span class="cs-expand-spacer"></span>
+                                <a class="cs-row-icon" data-action="itemChat" data-item-id="{{pool._id}}" title="{{localize 'WOD5E.ItemsList.ShowToChat'}}">
+                                    <i class="fas fa-comment-alt"></i>
+                                </a>
+                                <a class="cs-row-icon" data-action="itemDelete" data-item-id="{{pool._id}}" title="{{localize 'WOD5E.Delete'}}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                <span class="cs-expand-caret"><i class="fas fa-chevron-down"></i></span>
+                            </div>
+                            <div class="cs-expand-detail">
+                                {{{pool.system.enrichedDescription}}}
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+            {{/if}}
+        {{/each}}
+    </div>
+</section>

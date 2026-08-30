@@ -1,0 +1,965 @@
+/* ==========================================================================
+   VtM5e Chargen Wizard - reuses the same palette/tokens as
+   vtm5e-charactersheet (vtm5e-cs-*) so the two feel like one product.
+   Font stack intentionally matches the character sheet's fallback exactly
+   (no local Cinzel files are actually deployed there either, so both
+   degrade to Georgia/serif the same way rather than looking mismatched).
+   ========================================================================== */
+
+/* App id is now per-actor (vtm5e-chargen-wizard-<actorId>), so this must
+   match by prefix, not by exact id - see the constructor comment in
+   chargen-app.js for why the id stopped being a static string. */
+[id^="vtm5e-chargen-wizard"] {
+  --vtm5e-cs-bg: #0c0a0a;
+  --vtm5e-cs-bg-panel: #171414;
+  --vtm5e-cs-red-bright: #e0272c;
+  --vtm5e-cs-red-mid: #7a1414;
+  --vtm5e-cs-red-dark: #3a0d0d;
+  --vtm5e-cs-border: #4a2020;
+  --vtm5e-cs-text: #e8e0e0;
+  --vtm5e-cs-text-dim: #b0a0a0;
+  --vtm5e-cs-font-display: "Cinzel", "Cormorant", Georgia, serif;
+}
+
+[id^="vtm5e-chargen-wizard"] .window-content {
+  background:
+    radial-gradient(ellipse 900px 500px at 92% 0%, rgba(224, 39, 44, 0.16), transparent 60%),
+    radial-gradient(ellipse 700px 400px at 0% 100%, rgba(122, 20, 20, 0.10), transparent 65%),
+    var(--vtm5e-cs-bg) !important;
+  color: var(--vtm5e-cs-text);
+  padding: 0;
+}
+
+.vtm5e-chargen {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "steps steps"
+    "body log"
+    "nav nav";
+  height: 100%;
+  gap: 0;
+}
+
+/* ---------- Step nav ---------- */
+.vtm5e-chargen-steps {
+  grid-area: steps;
+  display: flex;
+  border-bottom: 1px solid var(--vtm5e-cs-border);
+  background: var(--vtm5e-cs-bg-panel);
+  overflow-x: auto;
+}
+
+.vtm5e-chargen-step-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--vtm5e-cs-border);
+  color: var(--vtm5e-cs-text-dim);
+  padding: 20px 10px;
+  cursor: pointer;
+  font-family: var(--vtm5e-cs-font-display);
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  min-height: 76px;
+}
+
+.vtm5e-chargen-step-btn:hover {
+  color: var(--vtm5e-cs-text);
+  background: rgba(224, 39, 44, 0.08);
+}
+
+.vtm5e-chargen-step-btn.active {
+  color: var(--vtm5e-cs-red-bright);
+  border-bottom: 3px solid var(--vtm5e-cs-red-bright);
+}
+
+.vtm5e-chargen-step-btn.done .vtm5e-chargen-step-num {
+  background: var(--vtm5e-cs-red-mid);
+  color: var(--vtm5e-cs-text);
+}
+
+.vtm5e-chargen-step-btn.locked {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.vtm5e-chargen-step-btn.locked:hover {
+  color: var(--vtm5e-cs-text-dim);
+  background: transparent;
+}
+
+.vtm5e-chargen-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--vtm5e-cs-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+/* ---------- Body ---------- */
+.vtm5e-chargen-body {
+  grid-area: body;
+  overflow-y: auto;
+  /* Without this, a scrollbar appearing/disappearing (e.g. the Clan/
+     Predator detail panel pushing content past the fold once something
+     is picked) changes the container's available width, which reflows
+     the card grid's auto-fill columns and makes the cards visibly change
+     size right when you select one. Reserving the gutter up front keeps
+     the width constant regardless of whether a scrollbar is showing. */
+  scrollbar-gutter: stable;
+  padding: 16px 20px;
+}
+
+.vtm5e-chargen-step h2 {
+  font-family: var(--vtm5e-cs-font-display);
+  color: var(--vtm5e-cs-red-bright);
+  border-bottom: 1px solid var(--vtm5e-cs-border);
+  padding-bottom: 6px;
+  margin: 0 0 10px;
+}
+
+.vtm5e-chargen-hint {
+  color: var(--vtm5e-cs-text-dim);
+  font-style: italic;
+  font-size: 12px;
+  margin: 0 0 12px;
+}
+
+.vtm5e-chargen-step label {
+  display: block;
+  font-family: var(--vtm5e-cs-font-display);
+  text-transform: uppercase;
+  font-size: 11px;
+  color: var(--vtm5e-cs-text-dim);
+  margin: 10px 0 3px;
+}
+
+.vtm5e-chargen-step input[type="text"],
+.vtm5e-chargen-step select,
+.vtm5e-chargen-step textarea {
+  width: 100%;
+  background: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-border);
+  color: var(--vtm5e-cs-text);
+  padding: 6px 8px;
+  border-radius: 2px;
+}
+
+.vtm5e-chargen-step textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+/* ---------- Attribute/Skill dot rows ---------- */
+.vtm5e-chargen-attr-group h3 {
+  font-family: var(--vtm5e-cs-font-display);
+  text-transform: capitalize;
+  color: var(--vtm5e-cs-text);
+  margin: 14px 0 6px;
+}
+
+.vtm5e-chargen-budget-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.vtm5e-chargen-budget-stat {
+  background: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 4px;
+  padding: 5px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.vtm5e-chargen-budget-stat .vtm5e-chargen-budget-dots {
+  color: var(--vtm5e-cs-red-bright);
+  letter-spacing: 1px;
+}
+
+.vtm5e-chargen-budget-stat b {
+  color: var(--vtm5e-cs-text);
+}
+
+.vtm5e-chargen-budget-stat.over {
+  border-color: #ff5a5a;
+}
+
+.vtm5e-chargen-budget-stat.over b {
+  color: #ff5a5a;
+  text-shadow: 0 0 6px rgba(255, 0, 0, 0.6);
+}
+
+.vtm5e-chargen-skill-dist-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.vtm5e-chargen-skill-dist-card {
+  background: var(--vtm5e-cs-bg-panel);
+  border: 2px solid var(--vtm5e-cs-border);
+  border-radius: 4px;
+  padding: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.vtm5e-chargen-skill-dist-card:hover {
+  border-color: var(--vtm5e-cs-red-mid);
+}
+
+.vtm5e-chargen-skill-dist-card.selected {
+  border-color: var(--vtm5e-cs-red-bright);
+  background: var(--vtm5e-cs-red-dark);
+  box-shadow: 0 0 10px rgba(224, 39, 44, 0.5);
+}
+
+.vtm5e-chargen-skill-dist-name {
+  font-family: var(--vtm5e-cs-font-display);
+  text-transform: uppercase;
+  font-size: 13px;
+  color: var(--vtm5e-cs-red-bright);
+  margin-bottom: 4px;
+}
+
+.vtm5e-chargen-skill-dist-desc {
+  font-size: 11px;
+  color: var(--vtm5e-cs-text-dim);
+}
+
+.vtm5e-chargen-skill-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 20px;
+}
+
+.vtm5e-chargen-dot-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 0;
+}
+
+.vtm5e-chargen-dot-row-label {
+  font-size: 12px;
+}
+
+.vtm5e-chargen-dots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.vtm5e-chargen-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid var(--vtm5e-cs-red-bright);
+  cursor: pointer;
+  display: inline-block;
+}
+
+.vtm5e-chargen-dot.filled {
+  background: var(--vtm5e-cs-red-bright);
+}
+
+.vtm5e-chargen-dot:hover {
+  box-shadow: 0 0 4px var(--vtm5e-cs-red-bright);
+}
+
+/* ---------- Card grid (Clan / Predator Type) ---------- */
+.vtm5e-chargen-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.vtm5e-chargen-card {
+  position: relative;
+  background: var(--vtm5e-cs-bg-panel);
+  border: 2px solid var(--vtm5e-cs-border);
+  border-radius: 4px;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.vtm5e-chargen-card:hover {
+  border-color: var(--vtm5e-cs-red-mid);
+}
+
+.vtm5e-chargen-card.selected {
+  border-color: var(--vtm5e-cs-red-bright);
+  background: var(--vtm5e-cs-red-dark);
+  box-shadow: 0 0 10px rgba(224, 39, 44, 0.7);
+}
+
+.vtm5e-chargen-card.selected::after {
+  content: "\f00c";
+  font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  color: var(--vtm5e-cs-red-bright);
+  font-size: 14px;
+  text-shadow: 0 0 4px black;
+}
+
+.vtm5e-chargen-card img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border: none;
+  margin-bottom: 4px;
+}
+
+.vtm5e-chargen-card-name {
+  font-family: var(--vtm5e-cs-font-display);
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--vtm5e-cs-text);
+}
+
+.vtm5e-chargen-card.unavailable {
+  opacity: 0.4;
+  filter: grayscale(1);
+  cursor: not-allowed;
+}
+
+.vtm5e-chargen-card.unavailable:hover {
+  border-color: var(--vtm5e-cs-border);
+}
+
+.vtm5e-chargen-card-unavailable-tag {
+  font-family: var(--vtm5e-cs-font-display);
+  text-transform: uppercase;
+  font-size: 9px;
+  color: #ff8a8a;
+  margin-top: 2px;
+}
+
+.vtm5e-chargen-detail {
+  background: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 4px;
+  padding: 10px 14px;
+}
+
+.vtm5e-chargen-detail h3 {
+  font-family: var(--vtm5e-cs-font-display);
+  color: var(--vtm5e-cs-red-bright);
+  margin-top: 0;
+}
+
+.vtm5e-chargen-bane {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--vtm5e-cs-border);
+  color: var(--vtm5e-cs-text-dim);
+}
+
+/* ---------- Thin-Blood Merits & Flaws sub-picker ---------- */
+.vtm5e-chargen-tb-section {
+  background: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-red-mid);
+  border-radius: 4px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+
+.vtm5e-chargen-tb-section h3 {
+  font-family: var(--vtm5e-cs-font-display);
+  color: var(--vtm5e-cs-red-bright);
+  text-transform: uppercase;
+  font-size: 13px;
+  margin: 0 0 4px;
+}
+
+.vtm5e-chargen-tb-section h4 {
+  font-family: var(--vtm5e-cs-font-display);
+  text-transform: uppercase;
+  font-size: 11px;
+  color: var(--vtm5e-cs-text-dim);
+  margin: 0 0 6px;
+}
+
+.vtm5e-chargen-tb-status {
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.vtm5e-chargen-tb-status b {
+  color: var(--vtm5e-cs-red-bright);
+}
+
+.vtm5e-chargen-tb-status.invalid {
+  color: #ff8a8a;
+}
+
+.vtm5e-chargen-tb-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.vtm5e-chargen-tb-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 5px 8px;
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 3px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.vtm5e-chargen-tb-item:hover {
+  border-color: var(--vtm5e-cs-red-mid);
+}
+
+.vtm5e-chargen-tb-item.taken {
+  border-color: var(--vtm5e-cs-red-bright);
+  background: var(--vtm5e-cs-red-dark);
+}
+
+.vtm5e-chargen-tb-check {
+  color: var(--vtm5e-cs-red-bright);
+  font-weight: bold;
+}
+
+/* ---------- Merits & Flaws picker ---------- */
+.vtm5e-chargen-mf-pool {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.vtm5e-chargen-mf-pool-stat {
+  background: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vtm5e-chargen-mf-pool-stat span {
+  font-family: var(--vtm5e-cs-font-display);
+  text-transform: uppercase;
+  font-size: 10px;
+  color: var(--vtm5e-cs-text-dim);
+}
+
+.vtm5e-chargen-mf-pool-stat b {
+  color: var(--vtm5e-cs-red-bright);
+  font-size: 14px;
+}
+
+.vtm5e-chargen-mf-pool-stat b.over {
+  color: #ff5a5a;
+  text-shadow: 0 0 6px rgba(255, 0, 0, 0.6);
+}
+
+.vtm5e-chargen-mf-pool-stat i {
+  color: var(--vtm5e-cs-text-dim);
+  font-size: 10px;
+}
+
+.vtm5e-chargen-mf-owned {
+  background: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.vtm5e-chargen-mf-owned h3 {
+  font-family: var(--vtm5e-cs-font-display);
+  color: var(--vtm5e-cs-red-bright);
+  text-transform: uppercase;
+  font-size: 12px;
+  margin: 0 0 6px;
+}
+
+.vtm5e-chargen-mf-owned ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+
+.vtm5e-chargen-mf-owned li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.vtm5e-chargen-mf-owned li.flaw .vtm5e-chargen-mf-owned-name {
+  color: #ff8a8a;
+}
+
+.vtm5e-chargen-mf-owned-dots {
+  color: var(--vtm5e-cs-red-bright);
+  letter-spacing: 1px;
+}
+
+.vtm5e-chargen-mf-owned-tag {
+  font-family: var(--vtm5e-cs-font-display);
+  text-transform: uppercase;
+  font-size: 9px;
+  color: var(--vtm5e-cs-text-dim);
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 8px;
+  padding: 1px 6px;
+}
+
+.vtm5e-chargen-mf-owned-remove {
+  background: transparent;
+  border: 1px solid var(--vtm5e-cs-border);
+  color: var(--vtm5e-cs-text-dim);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.vtm5e-chargen-mf-owned-remove:hover {
+  border-color: #ff5a5a;
+  color: #ff5a5a;
+}
+
+.vtm5e-chargen-mf-fixed-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--vtm5e-cs-bg);
+  border: 1px solid var(--vtm5e-cs-red-mid);
+  color: var(--vtm5e-cs-text-dim);
+  border-radius: 3px;
+  padding: 3px 10px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.vtm5e-chargen-mf-fixed-btn:hover {
+  border-color: var(--vtm5e-cs-red-bright);
+  color: var(--vtm5e-cs-text);
+}
+
+.vtm5e-chargen-mf-fixed-btn .vtm5e-chargen-mf-fixed-btn-dots {
+  color: var(--vtm5e-cs-red-bright);
+  letter-spacing: 1px;
+}
+
+.vtm5e-chargen-mf-fixed-btn.taken {
+  background: var(--vtm5e-cs-red-dark);
+  border-color: var(--vtm5e-cs-red-bright);
+  color: var(--vtm5e-cs-text);
+  box-shadow: 0 0 6px rgba(224, 39, 44, 0.5);
+}
+
+.vtm5e-chargen-mf-fixed-btn.locked {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.vtm5e-chargen-mf-fixed-btn.locked .vtm5e-chargen-mf-fixed-btn-dots {
+  color: var(--vtm5e-cs-text-dim);
+}
+
+#vtm5e-chargen-mf-search {
+  width: 100%;
+  background: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-border);
+  color: var(--vtm5e-cs-text);
+  padding: 6px 8px;
+  border-radius: 2px;
+  margin-bottom: 12px;
+}
+
+.vtm5e-chargen-mf-type-label {
+  font-family: var(--vtm5e-cs-font-display);
+  color: var(--vtm5e-cs-red-bright);
+  text-transform: uppercase;
+  font-size: 13px;
+  margin: 16px 0 6px;
+  border-bottom: 1px solid var(--vtm5e-cs-border);
+  padding-bottom: 4px;
+}
+
+.vtm5e-chargen-mf-folder {
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 4px;
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+
+.vtm5e-chargen-mf-folder-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--vtm5e-cs-bg-panel);
+  border: none;
+  color: var(--vtm5e-cs-text);
+  font-family: var(--vtm5e-cs-font-display);
+  text-transform: uppercase;
+  font-size: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.vtm5e-chargen-mf-folder-header:hover {
+  background: rgba(224, 39, 44, 0.08);
+}
+
+.vtm5e-chargen-mf-folder-header i {
+  transition: transform 0.15s;
+}
+
+.vtm5e-chargen-mf-folder.open .vtm5e-chargen-mf-folder-header i {
+  transform: rotate(90deg);
+}
+
+.vtm5e-chargen-mf-folder-count {
+  color: var(--vtm5e-cs-text-dim);
+  font-family: sans-serif;
+  text-transform: none;
+  font-size: 11px;
+}
+
+/* Plain class-toggled display:none, not wod5e's native toggleCollapse -
+   that action reads scrollHeight and never expands a display:none block. */
+.vtm5e-chargen-mf-folder-body {
+  display: none;
+  padding: 4px 10px 8px;
+}
+
+.vtm5e-chargen-mf-folder.open .vtm5e-chargen-mf-folder-body {
+  display: block;
+}
+
+.vtm5e-chargen-mf-item {
+  padding: 6px 0;
+  border-top: 1px solid rgba(74, 32, 32, 0.4);
+}
+
+.vtm5e-chargen-mf-item:first-child {
+  border-top: none;
+}
+
+.vtm5e-chargen-mf-item-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.vtm5e-chargen-mf-item-name {
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.vtm5e-chargen-mf-item-name:hover {
+  color: var(--vtm5e-cs-red-bright);
+}
+
+.vtm5e-chargen-mf-item-caret {
+  font-size: 9px;
+  color: var(--vtm5e-cs-text-dim);
+  margin-right: 4px;
+}
+
+/* Collapsed by default - the whole point of the expand/collapse toggle is
+   to keep a long Merits & Flaws list scannable, so nothing shows until a
+   player actually clicks a name (toggleMfItem). */
+.vtm5e-chargen-mf-item-desc {
+  display: none;
+  color: var(--vtm5e-cs-text-dim);
+  font-size: 11px;
+  font-style: italic;
+  margin: 4px 0 0;
+}
+
+.vtm5e-chargen-mf-item.expanded .vtm5e-chargen-mf-item-desc {
+  display: block;
+}
+
+.vtm5e-chargen-dot.locked {
+  border-color: var(--vtm5e-cs-text-dim);
+  background: var(--vtm5e-cs-text-dim);
+  cursor: not-allowed;
+}
+
+.vtm5e-chargen-dot.locked:hover {
+  box-shadow: none;
+}
+
+.vtm5e-chargen-dot.capped {
+  border-style: dashed;
+  border-color: var(--vtm5e-cs-text-dim);
+  background: transparent;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vtm5e-chargen-dot.capped:hover {
+  box-shadow: none;
+}
+
+.vtm5e-chargen-mf-item.unavailable {
+  opacity: 0.45;
+}
+
+.vtm5e-chargen-mf-item.unavailable .vtm5e-chargen-mf-item-name,
+.vtm5e-chargen-mf-item.unavailable .vtm5e-chargen-mf-item-desc {
+  color: var(--vtm5e-cs-text-dim);
+}
+
+.vtm5e-chargen-mf-unavailable-tag {
+  font-family: var(--vtm5e-cs-font-display);
+  text-transform: uppercase;
+  font-size: 9px;
+  color: #ff8a8a;
+  border: 1px solid #ff8a8a;
+  border-radius: 8px;
+  padding: 1px 6px;
+  margin-left: 6px;
+}
+
+.vtm5e-chargen-dot.unavailable {
+  cursor: not-allowed;
+}
+
+.vtm5e-chargen-dot.unavailable:hover {
+  box-shadow: none;
+}
+
+.vtm5e-chargen-mf-fixed-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ---------- Final touches ---------- */
+.vtm5e-chargen-final-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.vtm5e-chargen-final-grid > div {
+  background: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 4px;
+  padding: 10px;
+  text-align: center;
+}
+
+.vtm5e-chargen-final-grid span {
+  display: block;
+  font-family: var(--vtm5e-cs-font-display);
+  text-transform: uppercase;
+  font-size: 10px;
+  color: var(--vtm5e-cs-text-dim);
+}
+
+.vtm5e-chargen-final-grid b {
+  font-size: 20px;
+  color: var(--vtm5e-cs-red-bright);
+}
+
+/* ---------- Log ---------- */
+.vtm5e-chargen-log {
+  grid-area: log;
+  border-left: 1px solid var(--vtm5e-cs-border);
+  background: var(--vtm5e-cs-bg-panel);
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.vtm5e-chargen-log h3 {
+  font-family: var(--vtm5e-cs-font-display);
+  color: var(--vtm5e-cs-red-bright);
+  font-size: 13px;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+  border-bottom: 1px solid var(--vtm5e-cs-border);
+  padding-bottom: 6px;
+}
+
+.vtm5e-chargen-log ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vtm5e-chargen-log li {
+  font-size: 11px;
+  border-left: 2px solid var(--vtm5e-cs-red-mid);
+  padding: 2px 0 2px 8px;
+}
+
+/* ---------- Bottom nav ---------- */
+.vtm5e-chargen-nav {
+  grid-area: nav;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--vtm5e-cs-border);
+  background: var(--vtm5e-cs-bg-panel);
+  padding: 8px 14px;
+}
+
+.vtm5e-chargen-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vtm5e-chargen-nav-warning {
+  color: #ff8a8a;
+  font-size: 11px;
+  font-style: italic;
+  max-width: 420px;
+  text-align: right;
+}
+
+.vtm5e-chargen-nav button {
+  font-family: var(--vtm5e-cs-font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--vtm5e-cs-red-dark);
+  border: 1px solid var(--vtm5e-cs-red-mid);
+  color: var(--vtm5e-cs-text);
+  padding: 6px 18px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.vtm5e-chargen-nav button:hover:not(:disabled) {
+  background: var(--vtm5e-cs-red-mid);
+}
+
+.vtm5e-chargen-nav button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ---------- Discipline Power picker (DialogV2 popup) ----------
+   Renders inside a separate DialogV2 window, not nested under
+   #vtm5e-chargen-wizard, so the --vtm5e-cs-* custom properties scoped there
+   aren't in scope here - hardcoded literals matching the same palette
+   instead. Same visual pattern as vtm5e-xpshop's power picker (Jake's
+   reference for the look), ported here after he asked for chargen's own
+   Discipline-dot grants to use it too. */
+.vtm5e-chargen-power-list {
+  margin-top: 8px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.vtm5e-chargen-power-item {
+  background: #171414;
+  border: 1px solid #4a2020;
+  border-radius: 3px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.vtm5e-chargen-power-item.expanded {
+  border-color: #e0272c;
+}
+
+.vtm5e-chargen-power-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.vtm5e-chargen-power-item-header:hover .vtm5e-chargen-power-name {
+  color: #e0272c;
+}
+
+.vtm5e-chargen-power-name {
+  font-family: "Cinzel", "Cormorant", Georgia, serif;
+  color: #e8e0e0;
+}
+
+.vtm5e-chargen-power-expand-icon {
+  color: #b0a0a0;
+  font-size: 11px;
+}
+
+.vtm5e-chargen-power-desc {
+  font-size: 11px;
+  color: #b0a0a0;
+  margin: 4px 0 0;
+}
+
+/* Short text shows by default; full text swaps in once .expanded is
+   toggled on the item (see the render() handler in grant-engine.js) -
+   both strings are already in the DOM, this just flips which is visible. */
+.vtm5e-chargen-power-desc-full {
+  display: none;
+}
+
+.vtm5e-chargen-power-item.expanded .vtm5e-chargen-power-desc-short {
+  display: none;
+}
+
+.vtm5e-chargen-power-item.expanded .vtm5e-chargen-power-desc-full {
+  display: block;
+}
+
+.vtm5e-chargen-power-choose {
+  margin-top: 6px;
+  background: transparent;
+  border: 1px solid #4a2020;
+  color: #e8e0e0;
+  border-radius: 3px;
+  cursor: pointer;
+  padding: 3px 10px;
+  font-size: 11px;
+}
+
+.vtm5e-chargen-power-choose:hover {
+  border-color: #e0272c;
+  background: #3a0d0d;
+  color: #e0272c;
+}

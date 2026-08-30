@@ -1,0 +1,37 @@
+{
+  "id": "vtm5e-disciplines",
+  "title": "VtM5e Disciplines (Automated)",
+  "description": "Standalone Disciplines compendium for Vampire the Masquerade 5e - the corebook power catalog, with item names corrected and resistance/description data pre-configured for vtm5e-automation's Automated Resistance system. Forked once from the vampire-the-masquerade-5e-compendium addon (via migrate-to-standalone-compendium.js) specifically so those fixes aren't at risk of being overwritten by a future update to that addon. Not published; built for personal use.",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "authors": [
+    {
+      "name": "Jake"
+    }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "wod5e",
+        "type": "system",
+        "compatibility": {}
+      }
+    ]
+  },
+  "packs": [
+    {
+      "name": "disciplines",
+      "label": "VtM5e Disciplines (Automated)",
+      "path": "packs/disciplines",
+      "type": "Item",
+      "system": "wod5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ]
+}

@@ -1,0 +1,237 @@
+<div class="vtm5e-xpshop">
+  <nav class="vtm5e-xpshop-categories">
+    {{#each categories}}
+      <button type="button" class="vtm5e-xpshop-cat-btn {{#if this.active}}active{{/if}}" data-action="switchCategory" data-category="{{this.id}}">
+        {{this.label}}
+      </button>
+    {{/each}}
+  </nav>
+
+  <div class="vtm5e-xpshop-body">
+
+    {{#if attributes}}
+    <section class="vtm5e-xpshop-section">
+      <h2>Attributes</h2>
+      <p class="vtm5e-xpshop-hint">New level × 5 experience. Click a dot to raise toward it (charges every intermediate level); click the top pending dot again to back off.</p>
+      {{#each attributes}}
+        <div class="vtm5e-xpshop-group">
+          <h3>{{@key}}</h3>
+          {{#each this}}
+            <div class="vtm5e-xpshop-dot-row">
+              <span class="vtm5e-xpshop-dot-row-label">{{this.label}}</span>
+              {{#if this.pendingCost}}<span class="vtm5e-xpshop-pending-cost">+{{this.pendingCost}} xp</span>{{/if}}
+              <span class="vtm5e-xpshop-dots">
+                {{#each this.dots}}
+                  <span class="vtm5e-xpshop-dot {{#if this.owned}}owned{{/if}} {{#if this.pending}}pending{{/if}}" data-action="adjustAttribute" data-attribute="{{../id}}" data-n="{{this.n}}"></span>
+                {{/each}}
+              </span>
+            </div>
+          {{/each}}
+        </div>
+      {{/each}}
+    </section>
+    {{/if}}
+
+    {{#if skills}}
+    <section class="vtm5e-xpshop-section">
+      <h2>Skills</h2>
+      <p class="vtm5e-xpshop-hint">New level × 3 experience.</p>
+      <div class="vtm5e-xpshop-skill-columns">
+        {{#each skills}}
+          <div class="vtm5e-xpshop-group">
+            <h3>{{@key}}</h3>
+            {{#each this}}
+              <div class="vtm5e-xpshop-dot-row">
+                <span class="vtm5e-xpshop-dot-row-label">{{this.label}}</span>
+                {{#if this.pendingCost}}<span class="vtm5e-xpshop-pending-cost">+{{this.pendingCost}} xp</span>{{/if}}
+                <span class="vtm5e-xpshop-dots">
+                  {{#each this.dots}}
+                    <span class="vtm5e-xpshop-dot {{#if this.owned}}owned{{/if}} {{#if this.pending}}pending{{/if}}" data-action="adjustSkill" data-skill="{{../id}}" data-n="{{this.n}}"></span>
+                  {{/each}}
+                </span>
+              </div>
+            {{/each}}
+          </div>
+        {{/each}}
+      </div>
+    </section>
+    {{/if}}
+
+    {{#if specialties}}
+    <section class="vtm5e-xpshop-section">
+      <h2>Specialties</h2>
+      <p class="vtm5e-xpshop-hint">3 experience each, flat. Adds a +1 bonus for a specific narrow use of a Skill.</p>
+      <div class="vtm5e-xpshop-specialty-form">
+        <select name="specialtySkill">
+          {{#each specialties.skillOptions}}
+            <option value="{{this.id}}">{{this.label}}</option>
+          {{/each}}
+        </select>
+        <input type="text" name="specialtyText" placeholder="e.g. Interrogation" />
+        <button type="button" data-action="addSpecialty">Add to Cart (3 xp)</button>
+      </div>
+      {{#if specialties.draftEntries.length}}
+      <div class="vtm5e-xpshop-specialty-drafts">
+        <h3>In Cart</h3>
+        <ul>
+          {{#each specialties.draftEntries}}
+            <li>{{this.label}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      {{/if}}
+    </section>
+    {{/if}}
+
+    {{#if disciplines}}
+    <section class="vtm5e-xpshop-section">
+      <h2>Disciplines</h2>
+      {{#if disciplines.thinBlooded}}
+        <p class="vtm5e-xpshop-hint">Thin-Blooded characters have no intrinsic Disciplines (corebook p.136) - nothing to purchase here.</p>
+      {{else}}
+        <p class="vtm5e-xpshop-hint">In-clan: new level × 5. Out-of-clan: new level × 7. Caitiff: new level × 6, every Discipline. Each dot requires picking a specific Power at that level - click "+1 Dot" to browse.</p>
+
+        {{#if disciplines.powerPicker}}
+        <div class="vtm5e-xpshop-power-picker">
+          <div class="vtm5e-xpshop-power-picker-header">
+            <h3>Pick a {{disciplines.powerPicker.disciplineLabel}} {{disciplines.powerPicker.level}} Power</h3>
+            <button type="button" data-action="cancelDisciplinePick">Cancel</button>
+          </div>
+          {{#if disciplines.powerPicker.powers.length}}
+            <div class="vtm5e-xpshop-power-list">
+              {{#each disciplines.powerPicker.powers}}
+                <div class="vtm5e-xpshop-power-item {{#if this.expanded}}expanded{{/if}}">
+                  <div class="vtm5e-xpshop-power-item-header" data-action="toggleExpandPower" data-power-id="{{this.id}}">
+                    <span class="vtm5e-xpshop-power-name">{{this.name}}</span>
+                    <i class="fas fa-chevron-{{#if this.expanded}}up{{else}}down{{/if}} vtm5e-xpshop-power-expand-icon"></i>
+                  </div>
+                  <p class="vtm5e-xpshop-power-desc">{{this.description}}</p>
+                  <button type="button" class="vtm5e-xpshop-power-choose" data-action="pickDisciplinePower" data-power-id="{{this.id}}">Choose this Power</button>
+                </div>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="vtm5e-xpshop-hint">No unowned Powers found at this level in the compendium.</p>
+          {{/if}}
+        </div>
+        {{else}}
+          {{#each disciplines.rows}}
+            <div class="vtm5e-xpshop-disc-row">
+              <div class="vtm5e-xpshop-disc-row-main">
+                <span class="vtm5e-xpshop-disc-name">{{this.label}}</span>
+                <span class="vtm5e-xpshop-disc-multiplier">({{this.multiplierLabel}}, ×{{this.multiplier}})</span>
+                <span class="vtm5e-xpshop-dots">
+                  {{#each this.pips}}
+                    <span class="vtm5e-xpshop-dot {{#ifeq this.state "owned"}}owned{{/ifeq}} {{#ifeq this.state "pending"}}pending{{/ifeq}}" {{#if this.powerName}}title="{{this.powerName}}"{{/if}}></span>
+                  {{/each}}
+                </span>
+                {{#if this.maxed}}
+                  <span class="vtm5e-xpshop-disc-maxed">Max</span>
+                {{else}}
+                  <button type="button" class="vtm5e-xpshop-disc-add-btn" data-action="addDisciplineDot" data-discipline="{{this.id}}" data-level="{{this.nextLevel}}">
+                    +1 Dot ({{this.nextLevelCost}} xp)
+                  </button>
+                {{/if}}
+              </div>
+              {{#if this.cartEntries.length}}
+                <ul class="vtm5e-xpshop-disc-pending-list">
+                  {{#each this.cartEntries}}
+                    <li>{{this.targetLevel}}: {{this.powerName}} <i>({{this.cost}} xp, in cart)</i></li>
+                  {{/each}}
+                </ul>
+              {{/if}}
+            </div>
+          {{/each}}
+        {{/if}}
+      {{/if}}
+    </section>
+    {{/if}}
+
+    {{#if bloodPotency}}
+    <section class="vtm5e-xpshop-section">
+      <h2>Blood Potency</h2>
+      <p class="vtm5e-xpshop-hint">New level × 10 experience. No hard cap enforced here - check your Generation's maximum yourself.</p>
+      <div class="vtm5e-xpshop-dot-row">
+        <span class="vtm5e-xpshop-dot-row-label">Blood Potency</span>
+        {{#if bloodPotency.pendingCost}}<span class="vtm5e-xpshop-pending-cost">+{{bloodPotency.pendingCost}} xp</span>{{/if}}
+        <span class="vtm5e-xpshop-dots">
+          {{#each bloodPotency.dots}}
+            <span class="vtm5e-xpshop-dot {{#if this.owned}}owned{{/if}} {{#if this.pending}}pending{{/if}}" data-action="adjustBloodPotency" data-n="{{this.n}}"></span>
+          {{/each}}
+        </span>
+      </div>
+    </section>
+    {{/if}}
+
+    {{#if advantages}}
+    <section class="vtm5e-xpshop-section">
+      <h2>Advantages</h2>
+      <p class="vtm5e-xpshop-hint">3 experience per dot. Flaws aren't purchasable with experience per the corebook.</p>
+      <input type="text" id="vtm5e-xpshop-advantage-search" placeholder="Search Merits &amp; Backgrounds..." value="{{advantages.search}}" />
+      {{#each advantages.groups}}
+        <h3 class="vtm5e-xpshop-adv-type-label">{{this.label}}</h3>
+        {{#each this.folders}}
+          <div class="vtm5e-xpshop-adv-folder {{#if this.open}}open{{/if}}">
+            <button type="button" class="vtm5e-xpshop-adv-folder-header" data-action="toggleAdvantageFolder" data-folder="{{this.name}}">
+              <i class="fas fa-caret-right"></i> {{this.name}} <span class="vtm5e-xpshop-adv-folder-count">({{this.items.length}})</span>
+            </button>
+            <div class="vtm5e-xpshop-adv-folder-body">
+              {{#each this.items}}
+                <div class="vtm5e-xpshop-adv-item {{#if this.unavailable}}unavailable{{/if}}">
+                  <div class="vtm5e-xpshop-adv-item-main" {{#if this.unavailable}}title="Not available: {{this.unavailableReason}}"{{/if}}>
+                    <span class="vtm5e-xpshop-adv-item-name">
+                      {{this.name}}
+                      {{#if this.unavailable}}<span class="vtm5e-xpshop-adv-unavailable-tag">unavailable</span>{{/if}}
+                    </span>
+                    {{#if this.pendingCost}}<span class="vtm5e-xpshop-pending-cost">+{{this.pendingCost}} xp</span>{{/if}}
+                    {{#if this.fixedCost}}
+                      <button type="button" class="vtm5e-xpshop-adv-fixed-btn {{#if this.owned}}taken{{/if}}" data-action="adjustAdvantage" data-mf-id="{{this.id}}" data-n="{{this.fixedCost}}" {{#if this.unavailable}}disabled{{/if}} title="{{#if this.unavailable}}Not available: {{this.unavailableReason}}{{else}}Costs {{this.fixedCost}} dots ({{this.fixedCost}}× 3 xp){{/if}}">
+                        <span class="vtm5e-xpshop-adv-fixed-btn-dots">{{this.fixedCostDots}}</span>
+                      </button>
+                    {{else}}
+                      <span class="vtm5e-xpshop-dots">
+                        {{#each this.dots}}
+                          <span class="vtm5e-xpshop-dot {{#if this.owned}}owned{{/if}} {{#if this.pending}}pending{{/if}} {{#if this.capped}}capped{{/if}} {{#if ../unavailable}}unavailable{{/if}}" data-action="adjustAdvantage" data-mf-id="{{../id}}" data-n="{{this.n}}" title="{{#if this.capped}}Capped: {{this.capReason}}{{else if ../unavailable}}Not available: {{../unavailableReason}}{{/if}}"></span>
+                        {{/each}}
+                      </span>
+                    {{/if}}
+                  </div>
+                  <p class="vtm5e-xpshop-adv-item-desc">{{this.description}}</p>
+                </div>
+              {{/each}}
+            </div>
+          </div>
+        {{/each}}
+      {{/each}}
+    </section>
+    {{/if}}
+
+  </div>
+
+  <aside class="vtm5e-xpshop-cart">
+    <h3>Cart</h3>
+    {{#if cartEmpty}}
+      <p class="vtm5e-xpshop-hint">Nothing added yet - browse a category and click a dot or item to start building your purchase.</p>
+    {{else}}
+      <ul class="vtm5e-xpshop-cart-list">
+        {{#each cart}}
+          <li>
+            <span class="vtm5e-xpshop-cart-label">{{this.label}}</span>
+            <span class="vtm5e-xpshop-cart-cost">{{this.cost}} xp</span>
+            <button type="button" class="vtm5e-xpshop-cart-remove" data-action="removeCartLine" data-cart-id="{{this.id}}" title="Remove">×</button>
+          </li>
+        {{/each}}
+      </ul>
+    {{/if}}
+
+    <div class="vtm5e-xpshop-cart-totals">
+      <div class="vtm5e-xpshop-cart-total-row"><span>Cart total</span><b>{{cartTotal}} xp</b></div>
+      <div class="vtm5e-xpshop-cart-total-row"><span>Remaining XP</span><b>{{remainingXP}}</b></div>
+      <div class="vtm5e-xpshop-cart-total-row {{#if overBudget}}over{{/if}}"><span>After purchase</span><b>{{remainingAfterCart}}</b></div>
+    </div>
+
+    <button type="button" class="vtm5e-xpshop-commit-btn" data-action="commitCart" {{#if cartEmpty}}disabled{{/if}} {{#if overBudget}}disabled{{/if}}>
+      Commit Purchases
+    </button>
+  </aside>
+</div>

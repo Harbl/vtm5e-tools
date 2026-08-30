@@ -1,0 +1,598 @@
+/* VtM5e Coterie - self-hosted copy of vtm5e-charactersheet's palette/font
+   tokens and cs-expand-row component (no cross-module CSS dependency, same
+   convention as vtm5e-domainmap). Everything scoped under .vtm5e-coterie-app
+   (the ApplicationV2 root class), not .actor.sheet.vampire like the source. */
+
+.vtm5e-coterie-app {
+  --vtm5e-cs-bg: #0c0a0a;
+  --vtm5e-cs-bg-panel: #171414;
+  --vtm5e-cs-red-bright: #e0272c;
+  --vtm5e-cs-red-mid: #7a1414;
+  --vtm5e-cs-red-dark: #3a0d0d;
+  --vtm5e-cs-border: #4a2020;
+  --vtm5e-cs-text: #e8e0e0;
+  --vtm5e-cs-text-dim: #b0a0a0;
+  --vtm5e-cs-font-display: "Cinzel", "Cormorant", serif;
+}
+
+.vtm5e-coterie-app .window-content {
+  background: linear-gradient(180deg, #1a0e0e 0%, var(--vtm5e-cs-bg) 100%) !important;
+  color: var(--vtm5e-cs-text);
+  padding: 0;
+}
+
+.vtm5e-coterie-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  font-family: "Cormorant Garamond", serif;
+}
+
+.vtm5e-coterie-header {
+  padding: 14px 20px 10px;
+  border-bottom: 2px solid var(--vtm5e-cs-red-mid);
+}
+
+.vtm5e-coterie-title {
+  margin: 0;
+  font-family: var(--vtm5e-cs-font-display);
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--vtm5e-cs-red-bright);
+}
+
+.vtm5e-coterie-title[data-editable] {
+  cursor: pointer;
+}
+
+.vtm5e-coterie-title-edit {
+  font-size: 12px;
+  color: var(--vtm5e-cs-text-dim);
+  margin-left: 8px;
+}
+
+.vtm5e-coterie-tabs {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  padding: 8px 20px 0;
+  border-bottom: 1px solid var(--vtm5e-cs-border);
+}
+
+.vtm5e-coterie-tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--vtm5e-cs-text-dim);
+  font-family: var(--vtm5e-cs-font-display);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.vtm5e-coterie-tab-btn:hover {
+  color: var(--vtm5e-cs-text);
+}
+
+.vtm5e-coterie-tab-btn.active {
+  color: var(--vtm5e-cs-red-bright);
+  border-bottom-color: var(--vtm5e-cs-red-bright);
+}
+
+.vtm5e-coterie-tab-content {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.vtm5e-coterie-empty {
+  color: var(--vtm5e-cs-text-dim);
+  font-style: italic;
+}
+
+.vtm5e-coterie-add-btn {
+  align-self: flex-start;
+  background-color: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-border);
+  color: var(--vtm5e-cs-text);
+  border-radius: 3px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.vtm5e-coterie-add-btn:hover {
+  border-color: var(--vtm5e-cs-red-bright);
+  color: var(--vtm5e-cs-red-bright);
+}
+
+/* ---------- Members tab ---------- */
+.vtm5e-coterie-member-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vtm5e-coterie-member-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 3px;
+  padding: 8px 14px;
+}
+
+.vtm5e-coterie-member-portrait {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--vtm5e-cs-border);
+  flex-shrink: 0;
+}
+
+.vtm5e-coterie-member-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.vtm5e-coterie-member-name {
+  font-family: var(--vtm5e-cs-font-display);
+  font-weight: 700;
+  color: var(--vtm5e-cs-text);
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.vtm5e-coterie-member-type {
+  flex-shrink: 0;
+  font-family: var(--vtm5e-cs-font-display);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--vtm5e-cs-text-dim);
+  margin: 0 16px;
+}
+
+.vtm5e-coterie-resources {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.vtm5e-coterie-resource-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.vtm5e-coterie-resource-label {
+  flex-shrink: 0;
+  width: 68px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--vtm5e-cs-red-bright);
+}
+
+.vtm5e-coterie-box-row {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 auto;
+  gap: 5px;
+}
+
+.vtm5e-coterie-box {
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--vtm5e-cs-text-dim);
+  border-radius: 3px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.vtm5e-coterie-box--superficial::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  background: linear-gradient(to top right, transparent calc(50% - 1px), var(--vtm5e-cs-red-bright) calc(50% - 1px), var(--vtm5e-cs-red-bright) calc(50% + 1px), transparent calc(50% + 1px));
+}
+
+.vtm5e-coterie-box--aggravated {
+  background-color: var(--vtm5e-cs-red-bright);
+  border-color: var(--vtm5e-cs-red-bright);
+}
+
+.vtm5e-coterie-member-actions {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.vtm5e-coterie-member-actions a {
+  color: var(--vtm5e-cs-text-dim);
+  font-size: 13px;
+}
+
+.vtm5e-coterie-member-actions a:hover {
+  color: var(--vtm5e-cs-red-bright);
+}
+
+/* ---------- Header trackers (Chasse/Lien/Portillon) ---------- */
+.vtm5e-coterie-trackers {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--vtm5e-cs-border);
+}
+
+.vtm5e-coterie-tracker {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.vtm5e-coterie-tracker-label {
+  font-family: var(--vtm5e-cs-font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--vtm5e-cs-text);
+}
+
+.vtm5e-coterie-tracker-dots {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}
+
+.vtm5e-coterie-tracker-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid var(--vtm5e-cs-text-dim);
+  display: inline-block;
+}
+
+.vtm5e-coterie-tracker-dot.active {
+  background-color: var(--vtm5e-cs-red-bright);
+  border-color: var(--vtm5e-cs-red-bright);
+}
+
+.vtm5e-coterie-tracker-dot[data-action] {
+  cursor: pointer;
+}
+
+.vtm5e-coterie-hunting-difficulty {
+  text-align: center;
+  padding: 6px;
+  background-color: var(--vtm5e-cs-red-mid);
+  color: var(--vtm5e-cs-text);
+  font-family: var(--vtm5e-cs-font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---------- Shared form fields (Domain/Backgrounds/Notes tabs) ---------- */
+.vtm5e-coterie-field-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.vtm5e-coterie-field-row--stacked {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.vtm5e-coterie-field-label {
+  flex-shrink: 0;
+  font-family: var(--vtm5e-cs-font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--vtm5e-cs-red-bright);
+}
+
+.vtm5e-coterie-text-input,
+.vtm5e-coterie-textarea {
+  flex: 1 1 auto;
+  background-color: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 3px;
+  color: var(--vtm5e-cs-text);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 13px;
+  padding: 6px 10px;
+}
+
+.vtm5e-coterie-text-input:read-only,
+.vtm5e-coterie-textarea:read-only {
+  color: var(--vtm5e-cs-text-dim);
+  cursor: default;
+}
+
+.vtm5e-coterie-textarea {
+  resize: vertical;
+}
+
+.vtm5e-coterie-notes-textarea {
+  flex: 1 1 auto;
+}
+
+.vtm5e-coterie-tab-hint {
+  color: var(--vtm5e-cs-text-dim);
+  font-size: 12px;
+  font-style: italic;
+  margin: 0;
+}
+
+/* ---------- Domain tab ---------- */
+.vtm5e-coterie-domain-trait {
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 10px 14px;
+}
+
+.vtm5e-coterie-domain-trait-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.vtm5e-coterie-domain-trait-desc {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--vtm5e-cs-text-dim);
+  line-height: 1.4;
+}
+
+.vtm5e-coterie-hunting-difficulty-inline {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--vtm5e-cs-red-bright);
+}
+
+/* ---------- Backgrounds tab ---------- */
+.vtm5e-coterie-background-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vtm5e-coterie-background-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 10px;
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.vtm5e-coterie-background-label {
+  flex-shrink: 0;
+  width: 90px;
+  font-family: var(--vtm5e-cs-font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--vtm5e-cs-text);
+}
+
+.vtm5e-coterie-background-note {
+  flex: 1 1 auto;
+}
+
+/* ---------- Wishlist tab ---------- */
+.vtm5e-coterie-wishlist-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vtm5e-coterie-wishlist-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.05);
+  font-size: 13px;
+  color: var(--vtm5e-cs-text);
+}
+
+.vtm5e-coterie-wishlist-row a {
+  flex-shrink: 0;
+  color: var(--vtm5e-cs-text-dim);
+  font-size: 12px;
+}
+
+.vtm5e-coterie-wishlist-row a:hover {
+  color: var(--vtm5e-cs-red-bright);
+}
+
+/* ---------- Merits & Flaws / Equipment shared group header ---------- */
+.vtm5e-coterie-member-group-header {
+  font-family: var(--vtm5e-cs-font-display);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 14px;
+  color: var(--vtm5e-cs-text);
+  margin: 0 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px dotted var(--vtm5e-cs-border);
+}
+
+.vtm5e-coterie-points {
+  color: var(--vtm5e-cs-text-dim);
+  font-weight: 400;
+}
+
+.vtm5e-coterie-eq-slot {
+  font-size: 11px;
+  color: var(--vtm5e-cs-text-dim);
+  text-transform: uppercase;
+}
+
+.vtm5e-coterie-eq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ---------- Merits & Flaws grid (mirrors merits-flaws.hbs) ---------- */
+.vtm5e-coterie-app .cs-mf-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.vtm5e-coterie-app .cs-mf-column {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.vtm5e-coterie-app .cs-mf-column-header {
+  font-family: var(--vtm5e-cs-font-display);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: var(--vtm5e-cs-text);
+  margin-bottom: 2px;
+}
+
+/* ---------- Shared expandable-row component (mirrors
+   vtm5e-charactersheet.css's cs-expand-row, self-hosted) ---------- */
+.vtm5e-coterie-app .cs-expand-row {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 3px;
+}
+
+.vtm5e-coterie-app .cs-expand-summary {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.vtm5e-coterie-app .cs-expand-spacer {
+  flex: 1 1 auto;
+}
+
+.vtm5e-coterie-app .cs-expand-caret {
+  flex-shrink: 0;
+  color: var(--vtm5e-cs-text-dim);
+  font-size: 10px;
+  transition: transform 0.15s;
+}
+
+.vtm5e-coterie-app .cs-expand-row.cs-expanded .cs-expand-caret {
+  color: var(--vtm5e-cs-red-bright);
+  transform: rotate(180deg);
+}
+
+.vtm5e-coterie-app .cs-expand-detail {
+  display: none;
+  padding: 8px 12px 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--vtm5e-cs-text-dim);
+  border-top: 1px solid var(--vtm5e-cs-border);
+}
+
+.vtm5e-coterie-app .cs-expand-row.cs-expanded .cs-expand-detail {
+  display: block;
+}
+
+.vtm5e-coterie-app .cs-power-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  font-size: 13px;
+  color: var(--vtm5e-cs-text);
+}
+
+/* ---------- Actors sidebar folder-header button (lives in core Foundry UI,
+   outside .vtm5e-coterie-app - not palette-scoped like the rest of this
+   file, just a small color accent on top of the core theme). ---------- */
+.vtm5e-coterie-open-btn {
+  color: var(--color-text-light-highlight, #b0a0a0);
+}
+
+.vtm5e-coterie-open-btn:hover {
+  color: #e0272c;
+}
+
+/* ---------- Phone app launch tile ---------- */
+.vtm5e-coterie-phone-app {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.vtm5e-coterie-phone-open {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: 1px solid var(--vtm5e-cs-border, #4a2020);
+  border-radius: 6px;
+  color: var(--vtm5e-cs-red-bright, #e0272c);
+  padding: 20px 28px;
+  font-family: "Cinzel", serif;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.vtm5e-coterie-phone-open i {
+  font-size: 22px;
+}

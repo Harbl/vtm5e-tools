@@ -1,0 +1,113 @@
+{{!-- VtM5e Character Sheet Reskin - Header --}}
+<header class="actor-header cs-header" {{#if headerbg}} style="background: url({{headerbg}}) center;"{{/if}}>
+    <div class="cs-header-row">
+        <div class="cs-header-identity">
+            {{> "systems/wod5e/display/shared/actors/parts/header-profile.hbs"}}
+            <div class="cs-header-subtitle">
+                {{#if clan}}
+                    <span class="cs-clan-name clickable" data-action="searchItem" data-type="clan" data-tooltip-html="{{clanDescription}}" data-tooltip-direction="DOWN" title="{{localize 'WOD5E.Search'}}">{{clan.name}}</span>
+                {{else}}
+                    <span class="cs-clan-name cs-clan-none clickable" data-action="searchItem" data-type="clan" title="{{localize 'WOD5E.Search'}}">Select Clan</span>
+                {{/if}}
+                {{#if predator}}
+                    &bull; <span class="cs-predator-name clickable" data-action="searchItem" data-type="predatorType" data-tooltip-html="{{predatorDescription}}" data-tooltip-direction="DOWN" title="{{localize 'WOD5E.Search'}}">{{predator.name}}</span>
+                {{else}}
+                    &bull; <span class="cs-predator-name cs-predator-none clickable" data-action="searchItem" data-type="predatorType" title="{{localize 'WOD5E.Search'}}">Select Predator</span>
+                {{/if}}
+            </div>
+        </div>
+
+        <div class="cs-header-topright">
+            <div class="cs-bane-compulsion cs-mottled-bg">
+                <div class="cs-bc-line">
+                    <span class="cs-bc-label">{{localize "WOD5E.VTM.ClanBane"}}:</span>
+                    {{#if baneName}}
+                        <span class="cs-bc-value" data-tooltip-html="{{bane}}" data-tooltip-direction="DOWN">{{baneName}}</span>
+                    {{else}}
+                        <span class="cs-bc-value cs-bc-none">None</span>
+                    {{/if}}
+                </div>
+                <div class="cs-bc-line">
+                    <span class="cs-bc-label">Compulsion:</span>
+                    <select class="cs-bc-select" name="flags.vtm5e-charactersheet.compulsion" data-tooltip-html="{{compulsionText}}" data-tooltip-direction="DOWN">
+                        <option value="">None</option>
+                        {{#each compulsionOptions as |opt|}}
+                            <option value="{{opt}}"{{#ifeq opt ../compulsion}} selected{{/ifeq}}>{{opt}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            <div class="cs-quickrolls">
+                <button class="rollable rouse-button cs-roll-badge" data-action="roll" type="button" name="rouse"
+                    data-disable-basic-dice="true" data-use-absolute-value="true" data-absolute-value="1"
+                    data-label="{{localize 'WOD5E.VTM.RousingBlood'}}" data-increase-hunger="true" data-difficulty="1"
+                    title="{{localize 'WOD5E.VTM.RollRouse'}}"
+                    data-tooltip="Spend a Rouse Check to fuel a Discipline or wake for the night - on a failure, gain 1 Hunger." data-tooltip-direction="DOWN">
+                    <span class="cs-roll-badge-line1">Roll</span>
+                    <span class="cs-roll-badge-line2">Rouse</span>
+                </button>
+                {{#if frenzyActive}}
+                    <button class="vampire-button end-frenzy cs-roll-badge" data-action="endFrenzy" type="button"
+                        name="endfrenzy" title="{{localize 'WOD5E.VTM.EndFrenzy'}}"
+                        data-tooltip="End an active frenzy once its trigger condition has passed." data-tooltip-direction="DOWN">
+                        <span class="cs-roll-badge-line1">End</span>
+                        <span class="cs-roll-badge-line2">Frenzy</span>
+                    </button>
+                {{else}}
+                    <button class="vampire-button frenzy-roll cs-roll-badge" data-action="resistFrenzy" type="button"
+                        name="resistfrenzy" title="{{localize 'WOD5E.VTM.ResistFrenzy'}}"
+                        data-tooltip="Roll to resist losing control to the Beast when provoked, starved, or facing fire/sunlight." data-tooltip-direction="DOWN">
+                        <span class="cs-roll-badge-line1">Roll</span>
+                        <span class="cs-roll-badge-line2">Frenzy</span>
+                    </button>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+
+    {{!-- 2 rows x 3 columns, sitting full-width below the identity/bane row:
+          Health | Humanity | Blood Potency
+          Willpower | Hunger | Blood Resonance --}}
+    <div class="cs-header-stats">
+        <div class="cs-stat-row">
+            <div class="cs-stat cs-stat-health">
+                {{> "systems/wod5e/display/shared/actors/parts/health.hbs"}}
+            </div>
+            <div class="cs-stat cs-stat-humanity">
+                <label class="resource-label field-header system-rollable remorse-roll" data-action="remorseRoll"
+                    title="{{localize 'WOD5E.VTM.RollRemorse'}}"
+                    data-tooltip="How much of your mortal morality you've retained against the Beast - low Humanity risks Stains and frenzy." data-tooltip-direction="DOWN">
+                    {{localize "WOD5E.VTM.Humanity"}} <i class="fa-solid fa-dice-d10"></i>
+                </label>
+                {{> "systems/wod5e/display/vtm/actors/parts/humanity.hbs"}}
+            </div>
+            <div class="cs-stat cs-stat-potency">
+                <label class="resource-label field-header" data-tooltip="The strength and age of your vitae - higher Blood Potency means stronger Disciplines, but a harsher Bane and greater Hunger costs." data-tooltip-direction="DOWN">{{localize "WOD5E.VTM.BloodPotency"}}</label>
+                <div class="resource-value" data-value="{{blood.potency}}" data-name="system.blood.potency">
+                    <span class="resource-value-empty" data-action="dotCounterEmpty"></span>
+                    {{#numLoop 10}}
+                    <span class="resource-value-step" data-action="dotCounterChange" data-index="{{this}}"></span>
+                    {{/numLoop}}
+                </div>
+            </div>
+        </div>
+        <div class="cs-stat-row">
+            <div class="cs-stat cs-stat-willpower">
+                {{> "systems/wod5e/display/shared/actors/parts/willpower.hbs"}}
+            </div>
+            <div class="cs-stat cs-stat-hunger">
+                <label class="resource-label field-header" data-tooltip="How ravenous the Beast's hunger for blood has grown - higher Hunger means more dice on your rolls, but greater risk of a Bestial Failure." data-tooltip-direction="UP">{{localize "WOD5E.VTM.Hunger"}}</label>
+                {{> "systems/wod5e/display/vtm/actors/parts/hunger.hbs"}}
+            </div>
+            <div class="cs-stat cs-stat-resonance">
+                <label class="resource-label field-header" data-tooltip="The flavor your feeding leaves in your system - can grant a bonus die to a matching Discipline on your next roll." data-tooltip-direction="UP">{{localize "WOD5E.VTM.BloodResonance"}}</label>
+                {{#if resonance}}
+                    <span class="cs-resonance-value"
+                        data-tooltip-html="{{resonanceDescription}}" data-tooltip-direction="UP">{{resonance.name}}</span>
+                {{else}}
+                    <span class="cs-resonance-value cs-resonance-none" data-tooltip="The flavor your feeding leaves in your system - can grant a bonus die to a matching Discipline on your next roll." data-tooltip-direction="UP">None</span>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</header>

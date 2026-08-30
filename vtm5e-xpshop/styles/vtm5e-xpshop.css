@@ -1,0 +1,535 @@
+/* ==========================================================================
+   VtM5e XP Shop - reuses the same palette/tokens as vtm5e-charactersheet and
+   vtm5e-chargen (vtm5e-cs-*) so the whole product family feels like one
+   thing. Class names prefixed vtm5e-xpshop- (not vtm5e-chargen-) even though
+   several patterns (dot-row, card/folder list) are adapted from that
+   module's CSS - this module doesn't load vtm5e-chargen's stylesheet, so it
+   needs its own copy of anything it needs, not a shared class name.
+   ========================================================================== */
+
+#vtm5e-xpshop-wizard,
+[id^="vtm5e-xpshop-"] {
+  --vtm5e-cs-bg: #0c0a0a;
+  --vtm5e-cs-bg-panel: #171414;
+  --vtm5e-cs-red-bright: #e0272c;
+  --vtm5e-cs-red-mid: #7a1414;
+  --vtm5e-cs-red-dark: #3a0d0d;
+  --vtm5e-cs-amber: #c98a2e;
+  --vtm5e-cs-border: #4a2020;
+  --vtm5e-cs-text: #e8e0e0;
+  --vtm5e-cs-text-dim: #b0a0a0;
+  --vtm5e-cs-font-display: "Cinzel", "Cormorant", Georgia, serif;
+}
+
+[id^="vtm5e-xpshop-"] .window-content {
+  background:
+    radial-gradient(ellipse 900px 500px at 92% 0%, rgba(224, 39, 44, 0.16), transparent 60%),
+    radial-gradient(ellipse 700px 400px at 0% 100%, rgba(122, 20, 20, 0.10), transparent 65%),
+    var(--vtm5e-cs-bg) !important;
+  color: var(--vtm5e-cs-text);
+  padding: 0;
+}
+
+.vtm5e-xpshop {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "categories categories"
+    "body cart";
+  height: 100%;
+}
+
+/* ---------- Category nav ---------- */
+.vtm5e-xpshop-categories {
+  grid-area: categories;
+  display: flex;
+  border-bottom: 1px solid var(--vtm5e-cs-border);
+  background: var(--vtm5e-cs-bg-panel);
+  overflow-x: auto;
+}
+
+.vtm5e-xpshop-cat-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--vtm5e-cs-border);
+  color: var(--vtm5e-cs-text-dim);
+  padding: 12px 10px;
+  cursor: pointer;
+  font-family: var(--vtm5e-cs-font-display);
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.vtm5e-xpshop-cat-btn:hover {
+  color: var(--vtm5e-cs-text);
+  background: rgba(224, 39, 44, 0.08);
+}
+
+.vtm5e-xpshop-cat-btn.active {
+  color: var(--vtm5e-cs-red-bright);
+  border-bottom: 3px solid var(--vtm5e-cs-red-bright);
+}
+
+/* ---------- Body ---------- */
+.vtm5e-xpshop-body {
+  grid-area: body;
+  overflow-y: auto;
+  padding: 14px 18px;
+}
+
+.vtm5e-xpshop-section h2 {
+  font-family: var(--vtm5e-cs-font-display);
+  color: var(--vtm5e-cs-red-bright);
+  border-bottom: 1px solid var(--vtm5e-cs-border);
+  padding-bottom: 6px;
+  margin: 0 0 10px;
+}
+
+.vtm5e-xpshop-hint {
+  color: var(--vtm5e-cs-text-dim);
+  font-style: italic;
+  font-size: 12px;
+  margin: 0 0 12px;
+}
+
+.vtm5e-xpshop-group h3 {
+  font-family: var(--vtm5e-cs-font-display);
+  text-transform: capitalize;
+  color: var(--vtm5e-cs-text);
+  margin: 14px 0 6px;
+}
+
+.vtm5e-xpshop-skill-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 20px;
+}
+
+.vtm5e-xpshop-dot-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+
+.vtm5e-xpshop-dot-row-label {
+  font-size: 12px;
+  flex: 1;
+}
+
+.vtm5e-xpshop-pending-cost {
+  font-size: 10px;
+  color: var(--vtm5e-cs-amber);
+  white-space: nowrap;
+}
+
+.vtm5e-xpshop-dots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.vtm5e-xpshop-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid var(--vtm5e-cs-red-bright);
+  cursor: pointer;
+  display: inline-block;
+}
+
+.vtm5e-xpshop-dot.owned {
+  background: var(--vtm5e-cs-red-bright);
+}
+
+.vtm5e-xpshop-dot.pending {
+  background: var(--vtm5e-cs-amber);
+  border-color: var(--vtm5e-cs-amber);
+}
+
+.vtm5e-xpshop-dot.capped,
+.vtm5e-xpshop-dot.unavailable {
+  border-color: var(--vtm5e-cs-text-dim);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.vtm5e-xpshop-dot:hover {
+  box-shadow: 0 0 4px var(--vtm5e-cs-red-bright);
+}
+
+/* ---------- Specialties ---------- */
+.vtm5e-xpshop-specialty-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.vtm5e-xpshop-specialty-form select,
+.vtm5e-xpshop-specialty-form input[type="text"] {
+  background: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-border);
+  color: var(--vtm5e-cs-text);
+  padding: 5px 8px;
+  border-radius: 2px;
+}
+
+.vtm5e-xpshop-specialty-form input[type="text"] {
+  flex: 1;
+}
+
+.vtm5e-xpshop-specialty-form button,
+.vtm5e-xpshop-disc-add-btn,
+.vtm5e-xpshop-commit-btn {
+  background: var(--vtm5e-cs-red-mid);
+  border: 1px solid var(--vtm5e-cs-red-bright);
+  color: var(--vtm5e-cs-text);
+  padding: 6px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: var(--vtm5e-cs-font-display);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.vtm5e-xpshop-specialty-form button:hover,
+.vtm5e-xpshop-disc-add-btn:hover,
+.vtm5e-xpshop-commit-btn:hover:not(:disabled) {
+  background: var(--vtm5e-cs-red-bright);
+}
+
+.vtm5e-xpshop-specialty-drafts ul,
+.vtm5e-xpshop-disc-pending-list {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  font-size: 12px;
+  color: var(--vtm5e-cs-amber);
+}
+
+.vtm5e-xpshop-disc-pending-list i {
+  color: var(--vtm5e-cs-text-dim);
+}
+
+/* ---------- Disciplines ---------- */
+.vtm5e-xpshop-disc-row {
+  border-bottom: 1px solid var(--vtm5e-cs-border);
+  padding: 8px 0;
+}
+
+.vtm5e-xpshop-disc-row-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vtm5e-xpshop-disc-name {
+  font-family: var(--vtm5e-cs-font-display);
+  color: var(--vtm5e-cs-text);
+  text-transform: capitalize;
+}
+
+.vtm5e-xpshop-disc-multiplier {
+  font-size: 11px;
+  color: var(--vtm5e-cs-text-dim);
+}
+
+.vtm5e-xpshop-disc-maxed {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--vtm5e-cs-text-dim);
+  text-transform: uppercase;
+}
+
+.vtm5e-xpshop-disc-add-btn {
+  margin-left: auto;
+}
+
+.vtm5e-xpshop-power-picker {
+  background: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-red-mid);
+  border-radius: 4px;
+  padding: 10px 14px;
+}
+
+.vtm5e-xpshop-power-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.vtm5e-xpshop-power-picker-header h3 {
+  font-family: var(--vtm5e-cs-font-display);
+  color: var(--vtm5e-cs-red-bright);
+  margin: 0;
+}
+
+.vtm5e-xpshop-power-picker-header button {
+  background: transparent;
+  border: 1px solid var(--vtm5e-cs-border);
+  color: var(--vtm5e-cs-text-dim);
+  border-radius: 3px;
+  cursor: pointer;
+  padding: 4px 10px;
+}
+
+.vtm5e-xpshop-power-list {
+  margin-top: 8px;
+}
+
+.vtm5e-xpshop-power-item {
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 3px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.vtm5e-xpshop-power-item.expanded {
+  border-color: var(--vtm5e-cs-red-bright);
+}
+
+.vtm5e-xpshop-power-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.vtm5e-xpshop-power-item-header:hover .vtm5e-xpshop-power-name {
+  color: var(--vtm5e-cs-red-bright);
+}
+
+.vtm5e-xpshop-power-name {
+  font-family: var(--vtm5e-cs-font-display);
+  color: var(--vtm5e-cs-text);
+}
+
+.vtm5e-xpshop-power-expand-icon {
+  color: var(--vtm5e-cs-text-dim);
+  font-size: 11px;
+}
+
+.vtm5e-xpshop-power-desc {
+  font-size: 11px;
+  color: var(--vtm5e-cs-text-dim);
+  margin: 4px 0 0;
+}
+
+.vtm5e-xpshop-power-choose {
+  margin-top: 6px;
+  background: transparent;
+  border: 1px solid var(--vtm5e-cs-red-mid);
+  color: var(--vtm5e-cs-text);
+  border-radius: 3px;
+  cursor: pointer;
+  padding: 3px 10px;
+  font-size: 11px;
+}
+
+.vtm5e-xpshop-power-choose:hover {
+  border-color: var(--vtm5e-cs-red-bright);
+  background: var(--vtm5e-cs-red-dark);
+  color: var(--vtm5e-cs-red-bright);
+}
+
+/* ---------- Advantages (Merits/Backgrounds) ---------- */
+#vtm5e-xpshop-advantage-search {
+  width: 100%;
+  background: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-border);
+  color: var(--vtm5e-cs-text);
+  padding: 6px 8px;
+  border-radius: 2px;
+  margin-bottom: 10px;
+}
+
+.vtm5e-xpshop-adv-type-label {
+  font-family: var(--vtm5e-cs-font-display);
+  color: var(--vtm5e-cs-red-bright);
+  text-transform: uppercase;
+  font-size: 13px;
+  margin: 14px 0 6px;
+}
+
+.vtm5e-xpshop-adv-folder {
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 3px;
+  margin-bottom: 6px;
+}
+
+.vtm5e-xpshop-adv-folder-header {
+  width: 100%;
+  text-align: left;
+  background: var(--vtm5e-cs-bg-panel);
+  border: none;
+  color: var(--vtm5e-cs-text);
+  padding: 6px 10px;
+  cursor: pointer;
+  font-family: var(--vtm5e-cs-font-display);
+  font-size: 12px;
+}
+
+.vtm5e-xpshop-adv-folder-count {
+  color: var(--vtm5e-cs-text-dim);
+}
+
+.vtm5e-xpshop-adv-folder-body {
+  display: none;
+  padding: 6px 10px;
+}
+
+.vtm5e-xpshop-adv-folder.open .vtm5e-xpshop-adv-folder-body {
+  display: block;
+}
+
+.vtm5e-xpshop-adv-folder.open > .vtm5e-xpshop-adv-folder-header i {
+  transform: rotate(90deg);
+}
+
+.vtm5e-xpshop-adv-item {
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--vtm5e-cs-border);
+}
+
+.vtm5e-xpshop-adv-item:last-child {
+  border-bottom: none;
+}
+
+.vtm5e-xpshop-adv-item.unavailable {
+  opacity: 0.5;
+}
+
+.vtm5e-xpshop-adv-item-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vtm5e-xpshop-adv-item-name {
+  flex: 1;
+  font-size: 12px;
+}
+
+.vtm5e-xpshop-adv-unavailable-tag {
+  color: #ff8a8a;
+  font-size: 10px;
+  text-transform: uppercase;
+  margin-left: 6px;
+}
+
+.vtm5e-xpshop-adv-fixed-btn {
+  background: var(--vtm5e-cs-bg-panel);
+  border: 1px solid var(--vtm5e-cs-red-bright);
+  color: var(--vtm5e-cs-red-bright);
+  border-radius: 3px;
+  cursor: pointer;
+  padding: 3px 8px;
+}
+
+.vtm5e-xpshop-adv-fixed-btn.taken {
+  background: var(--vtm5e-cs-red-mid);
+  color: var(--vtm5e-cs-text);
+}
+
+.vtm5e-xpshop-adv-item-desc {
+  font-size: 11px;
+  color: var(--vtm5e-cs-text-dim);
+  margin: 4px 0 0;
+}
+
+/* ---------- Cart sidebar ---------- */
+.vtm5e-xpshop-cart {
+  grid-area: cart;
+  background: var(--vtm5e-cs-bg-panel);
+  border-left: 1px solid var(--vtm5e-cs-border);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.vtm5e-xpshop-cart h3 {
+  font-family: var(--vtm5e-cs-font-display);
+  color: var(--vtm5e-cs-red-bright);
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+
+.vtm5e-xpshop-cart-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  flex: 1;
+}
+
+.vtm5e-xpshop-cart-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--vtm5e-cs-border);
+  font-size: 12px;
+}
+
+.vtm5e-xpshop-cart-label {
+  flex: 1;
+}
+
+.vtm5e-xpshop-cart-cost {
+  color: var(--vtm5e-cs-amber);
+  white-space: nowrap;
+}
+
+.vtm5e-xpshop-cart-remove {
+  background: transparent;
+  border: none;
+  color: var(--vtm5e-cs-text-dim);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 2px;
+}
+
+.vtm5e-xpshop-cart-remove:hover {
+  color: var(--vtm5e-cs-red-bright);
+}
+
+.vtm5e-xpshop-cart-totals {
+  border-top: 1px solid var(--vtm5e-cs-border);
+  padding-top: 8px;
+  margin-top: auto;
+}
+
+.vtm5e-xpshop-cart-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 2px 0;
+  color: var(--vtm5e-cs-text-dim);
+}
+
+.vtm5e-xpshop-cart-total-row b {
+  color: var(--vtm5e-cs-text);
+}
+
+.vtm5e-xpshop-cart-total-row.over b {
+  color: #ff5a5a;
+  text-shadow: 0 0 6px rgba(255, 0, 0, 0.6);
+}
+
+.vtm5e-xpshop-commit-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 13px;
+}
+
+.vtm5e-xpshop-commit-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

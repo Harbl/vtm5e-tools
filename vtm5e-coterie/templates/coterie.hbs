@@ -1,0 +1,245 @@
+{{!-- VtM5e Coterie - desktop party sheet. Tab visibility is handled in JS
+      (CoterieApplication#syncActiveTab), not Handlebars conditionals - every
+      panel renders each pass, [data-tab-content] just gets hidden.
+      Chasse/Lien/Portillon dots appear twice on purpose (compact header +
+      full detail in the Domain tab) - both read the same fresh context
+      every render, so there's no risk of the two views disagreeing. --}}
+<div class="vtm5e-coterie-shell">
+    <header class="vtm5e-coterie-header">
+        <h1 class="vtm5e-coterie-title" {{#if isGM}}data-action="editName" data-editable="true"{{/if}}>
+            {{coterieName}}
+            {{#if isGM}}<i class="fas fa-pen vtm5e-coterie-title-edit"></i>{{/if}}
+        </h1>
+    </header>
+
+    <div class="vtm5e-coterie-trackers">
+        {{#each trackers as |tracker|}}
+            <div class="vtm5e-coterie-tracker" title="{{tracker.tooltip}}">
+                <span class="vtm5e-coterie-tracker-label">{{tracker.label}}</span>
+                <div class="vtm5e-coterie-tracker-dots">
+                    {{#each tracker.dots as |dot|}}
+                        <span class="vtm5e-coterie-tracker-dot {{#if dot.active}}active{{/if}}"
+                              {{#if ../../isGM}}data-action="setTracker" data-tracker-key="{{../tracker.key}}" data-index="{{dot.index}}"{{/if}}></span>
+                    {{/each}}
+                </div>
+            </div>
+        {{/each}}
+    </div>
+    {{#each trackers as |tracker|}}
+        {{#if tracker.huntingDifficulty}}
+            <div class="vtm5e-coterie-hunting-difficulty">Hunting Difficulty: {{tracker.huntingDifficulty}}</div>
+        {{/if}}
+    {{/each}}
+
+    <nav class="vtm5e-coterie-tabs">
+        <button type="button" class="vtm5e-coterie-tab-btn" data-action="switchTab" data-tab-button="members">Members</button>
+        <button type="button" class="vtm5e-coterie-tab-btn" data-action="switchTab" data-tab-button="domain">Domain</button>
+        <button type="button" class="vtm5e-coterie-tab-btn" data-action="switchTab" data-tab-button="backgrounds">Backgrounds</button>
+        <button type="button" class="vtm5e-coterie-tab-btn" data-action="switchTab" data-tab-button="meritsFlaws">Merits &amp; Flaws</button>
+        <button type="button" class="vtm5e-coterie-tab-btn" data-action="switchTab" data-tab-button="equipment">Equipment</button>
+        <button type="button" class="vtm5e-coterie-tab-btn" data-action="switchTab" data-tab-button="notes">Notes</button>
+        <button type="button" class="vtm5e-coterie-tab-btn" data-action="switchTab" data-tab-button="wishlist">Wishlist</button>
+    </nav>
+
+    <section class="vtm5e-coterie-tab-content" data-tab-content="members">
+        {{#if isGM}}
+            <button type="button" class="vtm5e-coterie-add-btn" data-action="addMember"><i class="fas fa-plus"></i> Add Member</button>
+        {{/if}}
+        {{#if members.length}}
+            <div class="vtm5e-coterie-member-list">
+                {{#each members as |member|}}
+                    <div class="vtm5e-coterie-member-row">
+                        <img class="vtm5e-coterie-member-portrait" src="{{member.img}}" alt="{{member.name}}">
+                        <div class="vtm5e-coterie-member-info">
+                            <span class="vtm5e-coterie-member-name">{{member.name}}</span>
+                            <div class="vtm5e-coterie-resources">
+                                {{#if member.healthBoxes}}
+                                    <div class="vtm5e-coterie-resource-row">
+                                        <span class="vtm5e-coterie-resource-label">Health</span>
+                                        <div class="vtm5e-coterie-box-row">
+                                            {{#each member.healthBoxes as |box|}}
+                                                <span class="vtm5e-coterie-box vtm5e-coterie-box--{{box.state}}"></span>
+                                            {{/each}}
+                                        </div>
+                                    </div>
+                                {{/if}}
+                                {{#if member.willpowerBoxes}}
+                                    <div class="vtm5e-coterie-resource-row">
+                                        <span class="vtm5e-coterie-resource-label">Willpower</span>
+                                        <div class="vtm5e-coterie-box-row">
+                                            {{#each member.willpowerBoxes as |box|}}
+                                                <span class="vtm5e-coterie-box vtm5e-coterie-box--{{box.state}}"></span>
+                                            {{/each}}
+                                        </div>
+                                    </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <span class="vtm5e-coterie-member-type">{{member.type}}</span>
+                        <div class="vtm5e-coterie-member-actions">
+                            <a data-action="openActorSheet" data-actor-uuid="{{member.uuid}}" title="Open sheet">
+                                <i class="fas fa-user"></i>
+                            </a>
+                            {{#if ../isGM}}
+                                <a data-action="removeMember" data-actor-uuid="{{member.uuid}}" title="Remove from coterie">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            {{/if}}
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        {{else}}
+            <p class="vtm5e-coterie-empty">No members yet.{{#if isGM}} Click "Add Member" to get started.{{/if}}</p>
+        {{/if}}
+    </section>
+
+    <section class="vtm5e-coterie-tab-content" data-tab-content="domain" hidden>
+        <div class="vtm5e-coterie-field-row">
+            <label class="vtm5e-coterie-field-label">Coterie Type</label>
+            <input type="text" class="vtm5e-coterie-text-input" data-field="coterieType" value="{{coterieType}}"
+                   placeholder="Blood Cult, Champions, Cerberus, Fang Gang, Nomads..." {{#unless isGM}}readonly{{/unless}}>
+        </div>
+
+        {{#each trackers as |tracker|}}
+            <div class="vtm5e-coterie-domain-trait">
+                <div class="vtm5e-coterie-domain-trait-header">
+                    <span class="vtm5e-coterie-tracker-label">{{tracker.label}}</span>
+                    <div class="vtm5e-coterie-tracker-dots">
+                        {{#each tracker.dots as |dot|}}
+                            <span class="vtm5e-coterie-tracker-dot {{#if dot.active}}active{{/if}}"
+                                  {{#if ../../isGM}}data-action="setTracker" data-tracker-key="{{../tracker.key}}" data-index="{{dot.index}}"{{/if}}></span>
+                        {{/each}}
+                    </div>
+                    {{#if tracker.huntingDifficulty}}<span class="vtm5e-coterie-hunting-difficulty-inline">Hunting Difficulty {{tracker.huntingDifficulty}}</span>{{/if}}
+                </div>
+                <p class="vtm5e-coterie-domain-trait-desc">{{tracker.tooltip}}</p>
+            </div>
+        {{/each}}
+
+        <div class="vtm5e-coterie-field-row vtm5e-coterie-field-row--stacked">
+            <label class="vtm5e-coterie-field-label">Domain Notes</label>
+            <textarea class="vtm5e-coterie-textarea" data-field="domainNotes" rows="4"
+                      placeholder="Size and boundaries, notable spots, who else claims it..." {{#unless isGM}}readonly{{/unless}}>{{domainNotes}}</textarea>
+        </div>
+    </section>
+
+    <section class="vtm5e-coterie-tab-content" data-tab-content="backgrounds" hidden>
+        <p class="vtm5e-coterie-tab-hint">Shared coterie Backgrounds (Core Rulebook p.196) - any member can use these as their own.</p>
+        <div class="vtm5e-coterie-background-list">
+            {{#each backgrounds as |bg|}}
+                <div class="vtm5e-coterie-background-row">
+                    <span class="vtm5e-coterie-background-label">{{bg.label}}</span>
+                    <div class="vtm5e-coterie-tracker-dots">
+                        {{#each bg.dots as |dot|}}
+                            <span class="vtm5e-coterie-tracker-dot {{#if dot.active}}active{{/if}}"
+                                  {{#if ../../isGM}}data-action="setBackgroundRating" data-background-key="{{../bg.key}}" data-index="{{dot.index}}"{{/if}}></span>
+                        {{/each}}
+                    </div>
+                    <input type="text" class="vtm5e-coterie-text-input vtm5e-coterie-background-note" data-background-note="{{bg.key}}" value="{{bg.note}}"
+                           placeholder="Notes" {{#unless ../isGM}}readonly{{/unless}}>
+                </div>
+            {{/each}}
+        </div>
+    </section>
+
+    <section class="vtm5e-coterie-tab-content" data-tab-content="meritsFlaws" hidden>
+        {{#if meritsFlawsByMember.length}}
+            {{#each meritsFlawsByMember as |group|}}
+                <div class="vtm5e-coterie-member-group">
+                    <h3 class="vtm5e-coterie-member-group-header">{{group.memberName}}</h3>
+                    <div class="cs-mf-grid">
+                        {{#each group.columns as |col|}}
+                            <div class="cs-mf-column">
+                                <div class="cs-mf-column-header">{{col.label}}</div>
+                                {{#each col.items as |item|}}
+                                    <div class="cs-expand-row">
+                                        <div class="cs-expand-summary" data-action="toggleExpandRow">
+                                            <span class="cs-power-name">{{item.name}} <span class="vtm5e-coterie-points">({{item.points}})</span></span>
+                                            <span class="cs-expand-spacer"></span>
+                                            <span class="cs-expand-caret"><i class="fas fa-chevron-down"></i></span>
+                                        </div>
+                                        <div class="cs-expand-detail">{{{item.description}}}</div>
+                                    </div>
+                                {{/each}}
+                            </div>
+                        {{/each}}
+                    </div>
+                </div>
+            {{/each}}
+        {{else}}
+            <p class="vtm5e-coterie-empty">No Merits, Flaws, Backgrounds, or Boons found among coterie members.</p>
+        {{/if}}
+    </section>
+
+    <section class="vtm5e-coterie-tab-content" data-tab-content="equipment" hidden>
+        {{#if equipmentByMember.length}}
+            {{#each equipmentByMember as |group|}}
+                <div class="vtm5e-coterie-member-group">
+                    <h3 class="vtm5e-coterie-member-group-header">{{group.memberName}}</h3>
+                    <div class="vtm5e-coterie-eq-list">
+                        {{#each group.items as |item|}}
+                            <div class="cs-expand-row">
+                                <div class="cs-expand-summary" data-action="toggleExpandRow">
+                                    <span class="cs-power-name">{{item.name}}</span>
+                                    <span class="vtm5e-coterie-eq-slot">{{item.slotLabel}}</span>
+                                    <span class="cs-expand-spacer"></span>
+                                    <span class="cs-expand-caret"><i class="fas fa-chevron-down"></i></span>
+                                </div>
+                                <div class="cs-expand-detail">{{{item.description}}}</div>
+                            </div>
+                        {{/each}}
+                    </div>
+                </div>
+            {{/each}}
+        {{else}}
+            <p class="vtm5e-coterie-empty">No worn equipment found among coterie members.</p>
+        {{/if}}
+    </section>
+
+    <section class="vtm5e-coterie-tab-content" data-tab-content="notes" hidden>
+        <textarea class="vtm5e-coterie-textarea vtm5e-coterie-notes-textarea" data-field="notes"
+                  placeholder="General coterie notes, plans, plot threads..." {{#unless isGM}}readonly{{/unless}}>{{notes}}</textarea>
+    </section>
+
+    <section class="vtm5e-coterie-tab-content" data-tab-content="wishlist" hidden>
+        {{#if isPlayerWishlist}}
+            <p class="vtm5e-coterie-tab-hint">Private - only you and the GM can see this.</p>
+            <button type="button" class="vtm5e-coterie-add-btn" data-action="addWishlistItem"><i class="fas fa-plus"></i> Add to Wishlist</button>
+            {{#if wishlistItems.length}}
+                <div class="vtm5e-coterie-wishlist-list">
+                    {{#each wishlistItems as |item|}}
+                        <div class="vtm5e-coterie-wishlist-row">
+                            <span>{{item.text}}</span>
+                            <a data-action="removeWishlistItem" data-wishlist-item-id="{{item.id}}" title="Remove">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    {{/each}}
+                </div>
+            {{else}}
+                <p class="vtm5e-coterie-empty">Your wishlist is empty.</p>
+            {{/if}}
+        {{else}}
+            <p class="vtm5e-coterie-tab-hint">Private per-player wishlists - GM review view. Each player builds their own from their client.</p>
+            {{#if wishlists.length}}
+                {{#each wishlists as |list|}}
+                    <div class="vtm5e-coterie-member-group">
+                        <h3 class="vtm5e-coterie-member-group-header">{{list.ownerName}}</h3>
+                        {{#if list.items.length}}
+                            <div class="vtm5e-coterie-wishlist-list">
+                                {{#each list.items as |item|}}
+                                    <div class="vtm5e-coterie-wishlist-row"><span>{{item.text}}</span></div>
+                                {{/each}}
+                            </div>
+                        {{else}}
+                            <p class="vtm5e-coterie-empty">Nothing yet.</p>
+                        {{/if}}
+                    </div>
+                {{/each}}
+            {{else}}
+                <p class="vtm5e-coterie-empty">No player wishlists yet - each is created the first time a player opens this tab.</p>
+            {{/if}}
+        {{/if}}
+    </section>
+</div>

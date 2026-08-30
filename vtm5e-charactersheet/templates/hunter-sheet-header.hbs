@@ -1,0 +1,49 @@
+{{!-- VtM5e Character Sheet Reskin - Hunter Header
+      Hunters (per wod5e's own HunterActorSheet) surface Health, Willpower,
+      Cell name, Despair (a binary toggle, not a dot tracker), and Drive/Creed
+      (item references, same searchable-or-editable pattern as Clan/Predator
+      on the Vampire header). No Humanity/Blood - hunters resist their own
+      Despair/Desperation instead of the Beast. --}}
+<header class="actor-header cs-header" {{#if headerbg}} style="background: url({{headerbg}}) center;"{{/if}}>
+    <div class="cs-header-row">
+        <div class="cs-header-identity">
+            {{> "systems/wod5e/display/shared/actors/parts/header-profile.hbs"}}
+            <div class="cs-domitor-field">
+                <span class="cs-domitor-label">{{localize "WOD5E.HTR.Cell"}}:</span>
+                <input class="cs-domitor-input" type="text" name="system.headers.cellname" value="{{cellname}}" placeholder="{{localize 'WOD5E.HTR.Cell'}}"/>
+            </div>
+        </div>
+
+        <div class="cs-header-topright">
+            <div class="cs-bane-compulsion cs-mottled-bg">
+                <div class="cs-bc-line">
+                    <span class="cs-bc-label" data-tooltip="What drives you to hunt - your personal reason for risking your life against the unnatural." data-tooltip-direction="DOWN">{{localize "WOD5E.HTR.Drive"}}:</span>
+                    <span class="cs-bc-value-wrap">
+                        {{> "systems/wod5e/display/shared/actors/partials/dynamic-item-display.hbs" item=drive type="drive"}}
+                    </span>
+                </div>
+                <div class="cs-bc-line">
+                    <span class="cs-bc-label" data-tooltip="Your philosophy on hunting - how you justify the violence and where you draw the line." data-tooltip-direction="DOWN">{{localize "WOD5E.HTR.Creed"}}:</span>
+                    <span class="cs-bc-value-wrap">
+                        {{> "systems/wod5e/display/shared/actors/partials/dynamic-item-display.hbs" item=creed type="creed"}}
+                    </span>
+                </div>
+                <div class="cs-bc-line cs-despair-line">
+                    <span class="cs-bc-label" data-tooltip="Marks a Hunter who has given in to hopelessness - active Despair spreads its darkest impulses to the whole Cell." data-tooltip-direction="DOWN">{{localize "WOD5E.HTR.Despair"}}:</span>
+                    {{> "systems/wod5e/display/htr/actors/parts/despair.hbs"}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cs-header-stats">
+        <div class="cs-stat-row cs-stat-row-2col">
+            <div class="cs-stat cs-stat-health">
+                {{> "systems/wod5e/display/shared/actors/parts/health.hbs"}}
+            </div>
+            <div class="cs-stat cs-stat-willpower">
+                {{> "systems/wod5e/display/shared/actors/parts/willpower.hbs"}}
+            </div>
+        </div>
+    </div>
+</header>

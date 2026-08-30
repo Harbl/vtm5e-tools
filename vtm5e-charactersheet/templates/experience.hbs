@@ -1,0 +1,56 @@
+{{!-- VtM5e Character Sheet Reskin - Experience: Remaining/Total tracker
+      (wide fields instead of wod5e's small bunched-up defaults), Add/Spend
+      buttons, then a delete-only history list. Deleting a history entry
+      already refunds it "for free" - wod5e computes remainingXP/totalXP by
+      summing every entries[] value each render (see getDerivedExperience
+      in the system source), so removing an entry from the list is the
+      refund, no extra bookkeeping needed here. --}}
+<section class="tab {{tab.cssClass}}" data-tab="{{tab.id}}" data-group="{{tab.group}}">
+    <div class="cs-exp-scroll">
+        <div class="resource-header cs-exp-divider"><span class="header-label">{{localize "WOD5E.Experience.Label"}}</span></div>
+
+        {{#if showLegacyXP}}
+            <div class="cs-exp-row">
+                <div class="cs-exp-field">
+                    <label class="resource-label field-header">{{localize "WOD5E.Experience.Remaining"}}</label>
+                    <input class="cs-exp-input" name="system.exp.value" type="number" value="{{exp.value}}"/>
+                </div>
+                <div class="cs-exp-field">
+                    <label class="resource-label field-header">{{localize "WOD5E.Experience.Total"}}</label>
+                    <input class="cs-exp-input" name="system.exp.max" type="number" value="{{exp.max}}"/>
+                </div>
+            </div>
+        {{else}}
+            <div class="cs-exp-row">
+                <div class="cs-exp-field">
+                    <label class="resource-label field-header">{{localize "WOD5E.Experience.Remaining"}}</label>
+                    <input class="cs-exp-input" name="system.derivedXP.remainingXP" type="number" value="{{derivedXP.remainingXP}}" disabled/>
+                </div>
+                <div class="cs-exp-field">
+                    <label class="resource-label field-header">{{localize "WOD5E.Experience.Total"}}</label>
+                    <input class="cs-exp-input" name="system.derivedXP.totalXP" type="number" value="{{derivedXP.totalXP}}" disabled/>
+                </div>
+            </div>
+        {{/if}}
+
+        <div class="cs-exp-buttons">
+            <a class="cs-exp-btn" data-action="addExperience" data-operation="add">{{localize "WOD5E.Experience.AddExperience"}}</a>
+            <a class="cs-exp-btn" data-action="addExperience" data-operation="spend">{{localize "WOD5E.Experience.SpendExperience"}}</a>
+        </div>
+
+        <div class="resource-header cs-exp-divider"><span class="header-label">{{localize "WOD5E.Experience.History"}}</span></div>
+
+        <div class="cs-exp-history">
+            {{#each experiences as |experience key|}}
+                <div class="cs-exp-history-row">
+                    <span class="cs-exp-history-name">{{experience.name}}</span>
+                    <span class="cs-expand-spacer"></span>
+                    <span class="cs-exp-history-value{{#ifgr experience.value 0}} cs-exp-gain{{/ifgr}}{{#ifless experience.value 0}} cs-exp-spend{{/ifless}}">{{experience.value}}</span>
+                    <a class="cs-row-icon" data-action="removeExperience" data-experience-id="{{experience.id}}" title="{{localize 'WOD5E.Delete'}}">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</section>

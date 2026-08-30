@@ -1,0 +1,39 @@
+{
+  "id": "vtm5e-tools",
+  "title": "VtM5e Tools",
+  "description": "Loader/bundle for the VtM5e Tools suite - a set of Vampire the Masquerade 5e modules for the wod5e system: a character sheet reskin, chat card reskin, a GM automation layer (damage, opposed rolls, weapon/armor conditions), a step-by-step character creation wizard, an XP spending shop, a coterie party sheet, and standalone Clan/Discipline/Path/Predator Type/Merit-Flaw/Loresheet/Equipment compendiums. Installing this module pulls in the rest as dependencies; disable any piece you don't want (e.g. swap in a different character sheet, or turn off the automation layer) from Manage Modules.",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "authors": [
+    {
+      "name": "Jake"
+    }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "wod5e",
+        "type": "system",
+        "compatibility": {}
+      }
+    ],
+    "requires": [
+      { "id": "vtm5e-clans", "type": "module" },
+      { "id": "vtm5e-disciplines", "type": "module" },
+      { "id": "vtm5e-equipment", "type": "module" },
+      { "id": "vtm5e-loresheets", "type": "module" },
+      { "id": "vtm5e-meritsflaws", "type": "module" },
+      { "id": "vtm5e-paths", "type": "module" },
+      { "id": "vtm5e-predatortypes", "type": "module" },
+      { "id": "vtm5e-automation", "type": "module" },
+      { "id": "vtm5e-charactersheet", "type": "module" },
+      { "id": "vtm5e-chatcards", "type": "module" },
+      { "id": "vtm5e-chargen", "type": "module" },
+      { "id": "vtm5e-xpshop", "type": "module" },
+      { "id": "vtm5e-coterie", "type": "module" }
+    ]
+  }
+}

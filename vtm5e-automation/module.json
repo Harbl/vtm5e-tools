@@ -1,0 +1,30 @@
+{
+  "id": "vtm5e-automation",
+  "title": "VtM5e Automation",
+  "description": "Personal automation layer for the wod5e system - damage application, opposed rolls, and other midiQOL-style conveniences for Vampire the Masquerade 5e. Not published; built for personal use.",
+  "version": "0.1.17",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "authors": [
+    {
+      "name": "Jake"
+    }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "wod5e",
+        "type": "system",
+        "compatibility": {}
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/vtm5e-automation.css"
+  ]
+}

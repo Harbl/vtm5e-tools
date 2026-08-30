@@ -1,0 +1,10 @@
+{{!-- VtM5e Character Sheet Reskin - horizontal text-label tab bar --}}
+<div class="tabs-container cs-tabs-container">
+    <nav class="sheet-tabs tabs cs-tab-bar" data-group="primary">
+        {{#each tabs as |tab|}}
+            <div class="{{tab.cssClass}} cs-tab" data-action="tab" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+                <span class="cs-tab-label">{{localize tab.title}}</span>
+            </div>
+        {{/each}}
+    </nav>
+</div>

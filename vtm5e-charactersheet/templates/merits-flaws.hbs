@@ -1,0 +1,38 @@
+{{!-- VtM5e Character Sheet Reskin - Merits & Flaws: 4 columns (Merits/Flaws/
+      Backgrounds/Boons), each item an expandable row using the same
+      cs-expand-row pattern as the Disciplines tab. --}}
+<section class="tab {{tab.cssClass}}" data-tab="{{tab.id}}" data-group="{{tab.group}}">
+    <div class="cs-mf-grid">
+        {{#each mfColumns as |col|}}
+            <div class="cs-mf-column">
+                <div class="cs-mf-column-header">{{col.label}}</div>
+                {{#each col.items as |item|}}
+                    <div class="cs-expand-row" data-drag="true" data-item-id="{{item.id}}" data-document-uuid="{{item.uuid}}" data-type="Item">
+                        <div class="cs-expand-summary" data-action="toggleExpandRow">
+                            <span class="cs-power-name">{{item.name}}</span>
+                            <span class="cs-expand-spacer"></span>
+                            {{#ifnoteq col.key "boon"}}
+                                <div class="resource-value cs-mf-dots" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
+                                    <span class="resource-value-empty" data-action="dotCounterEmpty"></span>
+                                    {{#numLoop 5}}
+                                        <span class="resource-value-step" data-action="dotCounterChange" data-index="{{this}}"></span>
+                                    {{/numLoop}}
+                                </div>
+                            {{/ifnoteq}}
+                            <a class="cs-row-icon" data-action="itemChat" data-item-id="{{item._id}}" title="{{localize 'WOD5E.ItemsList.ShowToChat'}}">
+                                <i class="fas fa-comment-alt"></i>
+                            </a>
+                            <a class="cs-row-icon" data-action="itemDelete" data-item-id="{{item._id}}" title="{{localize 'WOD5E.Delete'}}">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                            <span class="cs-expand-caret"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="cs-expand-detail">
+                            {{{item.system.enrichedDescription}}}
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        {{/each}}
+    </div>
+</section>

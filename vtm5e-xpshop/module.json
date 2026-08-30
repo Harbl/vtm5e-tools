@@ -1,0 +1,31 @@
+{
+  "id": "vtm5e-xpshop",
+  "title": "VtM5e XP Shop",
+  "description": "Cart-based Experience-spending shop for Vampire/Ghoul characters - Attributes, Skills, Specialties, Disciplines (with Power picking), Blood Potency, and Advantages (Merits/Backgrounds), all costed per the V5 corebook's Trait Costs: Experience table (p.137). Replaces the Character Sheet's stock 'Spend Experience' dialog with a real browse-cart-checkout flow. Reads compendium data from vtm5e-clans, vtm5e-disciplines, and vtm5e-meritsflaws. Not published; built for personal use.",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "authors": [
+    {
+      "name": "Jake"
+    }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "wod5e",
+        "type": "system",
+        "compatibility": {}
+      }
+    ],
+    "requires": [
+      { "id": "vtm5e-clans", "type": "module" },
+      { "id": "vtm5e-disciplines", "type": "module" },
+      { "id": "vtm5e-meritsflaws", "type": "module" }
+    ]
+  },
+  "esmodules": ["scripts/main.js"],
+  "styles": ["styles/vtm5e-xpshop.css"]
+}

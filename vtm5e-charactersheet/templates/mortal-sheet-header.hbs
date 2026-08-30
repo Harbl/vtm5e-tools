@@ -1,0 +1,24 @@
+{{!-- VtM5e Character Sheet Reskin - Mortal Header
+      Mortals (per wod5e's own MortalActorSheet/data model) only ever
+      surface Health and Willpower - no Humanity (that's vampire/ghoul-only,
+      tied to resisting the Beast), no Domitor/Clan/Predator/etc. Same
+      identity-row-then-stats-row layout as Vampire/Ghoul, just narrower
+      still. --}}
+<header class="actor-header cs-header" {{#if headerbg}} style="background: url({{headerbg}}) center;"{{/if}}>
+    <div class="cs-header-row">
+        <div class="cs-header-identity">
+            {{> "systems/wod5e/display/shared/actors/parts/header-profile.hbs"}}
+        </div>
+    </div>
+
+    <div class="cs-header-stats">
+        <div class="cs-stat-row cs-stat-row-2col">
+            <div class="cs-stat cs-stat-health">
+                {{> "systems/wod5e/display/shared/actors/parts/health.hbs"}}
+            </div>
+            <div class="cs-stat cs-stat-willpower">
+                {{> "systems/wod5e/display/shared/actors/parts/willpower.hbs"}}
+            </div>
+        </div>
+    </div>
+</header>

@@ -1,0 +1,50 @@
+{{!-- VtM5e Character Sheet Reskin - Werewolf Header
+      Health/Willpower/Rage in the stats row (Rage gets an inline roll icon
+      next to its label, same treatment as Ghoul's Humanity/remorse-roll).
+      Tribe/Auspice live in the header's topright box, same slot Vampire uses
+      for Bane/Compulsion - reusing wod5e's own dynamic-item-display partial
+      (search/add when empty, name+edit-pencil when set) rather than
+      Vampire's custom clickable-span+tooltip treatment, since Tribe/Auspice
+      don't have the same hover-description content built up for them yet. --}}
+<header class="actor-header cs-header" {{#if headerbg}} style="background: url({{headerbg}}) center;"{{/if}}>
+    <div class="cs-header-row">
+        <div class="cs-header-identity">
+            {{> "systems/wod5e/display/shared/actors/parts/header-profile.hbs"}}
+        </div>
+
+        <div class="cs-header-topright">
+            <div class="cs-bane-compulsion cs-mottled-bg">
+                <div class="cs-bc-line">
+                    <span class="cs-bc-label" data-tooltip="Your werewolf tribe - your pack's spiritual family and cultural identity among the Garou." data-tooltip-direction="DOWN">{{localize "WOD5E.WTA.Tribe"}}:</span>
+                    <span class="cs-bc-value-wrap">
+                        {{> "systems/wod5e/display/shared/actors/partials/dynamic-item-display.hbs" item=tribe type="tribe"}}
+                    </span>
+                </div>
+                <div class="cs-bc-line">
+                    <span class="cs-bc-label" data-tooltip="The phase of the moon under which you were born - shapes your role and your first Gift." data-tooltip-direction="DOWN">{{localize "WOD5E.WTA.Auspice"}}:</span>
+                    <span class="cs-bc-value-wrap">
+                        {{> "systems/wod5e/display/shared/actors/partials/dynamic-item-display.hbs" item=auspice type="auspice"}}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cs-header-stats">
+        <div class="cs-stat-row">
+            <div class="cs-stat cs-stat-health">
+                {{> "systems/wod5e/display/shared/actors/parts/health.hbs"}}
+            </div>
+            <div class="cs-stat cs-stat-willpower">
+                {{> "systems/wod5e/display/shared/actors/parts/willpower.hbs"}}
+            </div>
+            <div class="cs-stat cs-stat-rage">
+                <label class="resource-label field-header" data-tooltip="Your fury and supernatural power - spend Rage to shift form or fuel Gifts, but run too low and you risk losing the wolf." data-tooltip-direction="UP">
+                    {{localize "WOD5E.WTA.Rage"}}
+                    {{> "systems/wod5e/display/wta/actors/parts/rage-button.hbs"}}
+                </label>
+                {{> "systems/wod5e/display/wta/actors/parts/rage-value.hbs"}}
+            </div>
+        </div>
+    </div>
+</header>

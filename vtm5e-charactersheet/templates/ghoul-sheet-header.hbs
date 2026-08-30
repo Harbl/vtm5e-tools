@@ -1,0 +1,35 @@
+{{!-- VtM5e Character Sheet Reskin - Ghoul Header
+      Ghouls (per wod5e's own GhoulActorSheet) only ever surface Health,
+      Willpower, Humanity, and Domitor - no Bane/Compulsion/Predator/
+      Resonance/Rouse-Frenzy, since none of those apply. Mirrors the Vampire
+      header's identity-row-then-stats-row layout, just narrower. --}}
+<header class="actor-header cs-header" {{#if headerbg}} style="background: url({{headerbg}}) center;"{{/if}}>
+    <div class="cs-header-row">
+        <div class="cs-header-identity">
+            {{> "systems/wod5e/display/shared/actors/parts/header-profile.hbs"}}
+            <div class="cs-domitor-field">
+                <span class="cs-domitor-label" data-tooltip="The vampire who feeds you their vitae, binding you as their ghoul." data-tooltip-direction="DOWN">{{localize "WOD5E.VTM.Domitor"}}:</span>
+                <input class="cs-domitor-input" type="text" name="system.headers.domitor" value="{{domitor}}" placeholder="{{localize 'WOD5E.VTM.Domitor'}}"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="cs-header-stats">
+        <div class="cs-stat-row">
+            <div class="cs-stat cs-stat-health">
+                {{> "systems/wod5e/display/shared/actors/parts/health.hbs"}}
+            </div>
+            <div class="cs-stat cs-stat-willpower">
+                {{> "systems/wod5e/display/shared/actors/parts/willpower.hbs"}}
+            </div>
+            <div class="cs-stat cs-stat-humanity">
+                <label class="resource-label field-header system-rollable remorse-roll" data-action="remorseRoll"
+                    title="{{localize 'WOD5E.VTM.RollRemorse'}}"
+                    data-tooltip="How much of your mortal morality you've retained - low Humanity risks Stains and losing yourself." data-tooltip-direction="DOWN">
+                    {{localize "WOD5E.VTM.Humanity"}} <i class="fa-solid fa-dice-d10"></i>
+                </label>
+                {{> "systems/wod5e/display/vtm/actors/parts/humanity.hbs"}}
+            </div>
+        </div>
+    </div>
+</header>

@@ -1,0 +1,37 @@
+{
+  "id": "vtm5e-paths",
+  "title": "VtM5e Paths of Enlightenment",
+  "description": "Standalone Paths of Enlightenment compendium (Sabbat/alternate-Humanity tracks) - split out of vtm5e-disciplines, which had been used as a dumping ground for anything wod5e doesn't have a dedicated pack for. Not published; built for personal use.",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "authors": [
+    {
+      "name": "Jake"
+    }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "wod5e",
+        "type": "system",
+        "compatibility": {}
+      }
+    ]
+  },
+  "packs": [
+    {
+      "name": "paths",
+      "label": "VtM5e Paths of Enlightenment",
+      "path": "packs/paths",
+      "type": "Item",
+      "system": "wod5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{{!-- VtM5e Character Sheet Reskin - Gifts & Renown: flat expandable list,
+      same treatment Disciplines/Edges got instead of wod5e's stock
+      select-then-reveal tree. Renown (Glory/Honor/Wisdom) stays at the top
+      via wod5e's own shared renown.hbs partial - it's already a plain
+      3-column dot tracker, no vampire-specific styling assumptions to
+      rework. Gift powers use Rage Checks the way Discipline powers use
+      Rouse Checks. --}}
+<section class="tab {{tab.cssClass}}" data-tab="{{tab.id}}" data-group="{{tab.group}}">
+    <div class="cs-disc-scroll">
+        {{> "modules/vtm5e-charactersheet/templates/renown.hbs"}}
+
+        {{#if frenzyActive}}
+            <div class="cs-cl-divider resource-header"><span class="header-label cs-frenzy-warning">{{localize 'WOD5E.WTA.FrenzyActiveWarning'}}</span></div>
+        {{/if}}
+
+        {{#each gifts as |gift key|}}
+            {{#if gift.visible}}
+                <div class="cs-disc-group">
+                    <div class="cs-disc-header">
+                        <span class="cs-disc-name">{{gift.displayName}}</span>
+                        <div class="item-controls cs-disc-header-controls">
+                            <a class="rollable discipline-dice" data-action="giftChat" title="{{localize 'WOD5E.ItemsList.ShowToChat'}}" data-gift="{{key}}">
+                                <i class="fas fa-comment-alt"></i>
+                            </a>
+                            {{#if (eq gift.powers.length 0)}}
+                                <a class="item-control discipline-delete" data-action="removeGift" title="{{localize 'WOD5E.Delete'}}" data-gift="{{key}}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            {{/if}}
+                        </div>
+                    </div>
+
+                    {{#each gift.powers as |power|}}
+                        <div class="cs-expand-row" data-drag="true" data-item-id="{{power.id}}" data-document-uuid="{{power.uuid}}" data-type="Item">
+                            <div class="cs-expand-summary" data-action="toggleExpandRow">
+                                {{#if (isNotEmpty power.system.dicepool)}}
+                                    <a class="cs-row-icon rollable-item" data-action="rollItem" data-item-uuid="{{power.uuid}}" title="{{localize 'WOD5E.RollList.Label'}}">
+                                        <i class="fa-solid fa-dice-d10"></i>
+                                    </a>
+                                {{/if}}
+                                <span class="cs-power-name">{{power.name}}</span>
+                                <span class="cs-power-cost">{{localize (generateLocalizedLabel power.system.renown 'renown')}}</span>
+                                <span class="cs-expand-spacer"></span>
+                                <span class="cs-power-level">{{power.system.level}}</span>
+                                <a class="cs-row-icon" data-action="itemChat" data-item-id="{{power._id}}" title="{{localize 'WOD5E.ItemsList.ShowToChat'}}">
+                                    <i class="fas fa-comment-alt"></i>
+                                </a>
+                                <a class="cs-row-icon" data-action="itemDelete" data-item-id="{{power._id}}" title="{{localize 'WOD5E.Delete'}}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                <span class="cs-expand-caret"><i class="fas fa-chevron-down"></i></span>
+                            </div>
+                            <div class="cs-expand-detail">
+                                {{{power.system.enrichedDescription}}}
+                                {{#ifgr power.system.cost 0}}
+                                    <div class="cs-power-rouse">
+                                        {{power.system.cost}} {{localize 'WOD5E.WTA.RageChecks'}}
+                                        <a class="cs-row-icon rollable-item" data-action="roll" data-disable-basic-dice="true" data-use-absolute-value="true"
+                                            data-absolute-value="{{power.system.cost}}" data-label="{{localize 'WOD5E.WTA.RageCheck'}} - {{power.name}}"
+                                            data-decrease-rage="true" title="{{localize 'WOD5E.WTA.RollRage'}}">
+                                            <i class="fa-solid fa-dice-d10"></i>
+                                        </a>
+                                    </div>
+                                {{/ifgr}}
+                                {{#ifgr power.system.willpowercost 0}}
+                                    <div class="cs-power-rouse">
+                                        {{power.system.willpowercost}} {{localize 'WOD5E.Chat.WillpowerDamage'}}
+                                        <a class="cs-row-icon" data-action="damageWillpower" data-label="{{power.name}}"
+                                            data-willpower-damage="{{power.system.willpowercost}}" title="{{localize 'WOD5E.WTA.DamageWillpower'}}">
+                                            <i class="fa-solid fa-person-arrow-down-to-line"></i>
+                                        </a>
+                                    </div>
+                                {{/ifgr}}
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+            {{/if}}
+        {{/each}}
+    </div>
+</section>

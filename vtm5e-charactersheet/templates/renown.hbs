@@ -1,0 +1,58 @@
+{{!-- VtM5e Character Sheet Reskin - Renown.
+      Forked from wod5e's stock renown.hbs purely to add hover tooltips to
+      Glory/Honor/Wisdom - everything else (markup, classes, dot-tracker
+      behavior) is untouched, so it still picks up wod5e's own generic
+      styling plus this module's broad .actor.sheet.vampire theming. --}}
+<div class="flexrow grid grid-3col renown">
+  <!-- Glory-->
+  <div class="flex-group-center glory-value">
+    <label for="actor.system.renown.glory.value" class="resource-label rollable field-header" data-action="roll" data-value-paths="renown.glory.value"
+        data-renown="glory" data-select-dialog="true"
+        data-tooltip="Renown earned through combat, daring, and facing danger head-on." data-tooltip-direction="UP">
+        {{localize "WOD5E.WTA.Glory"}}
+        <i class="fa-solid fa-dice-d10"></i>
+    </label>
+    <div class="resource-content flexrow flex-center flex-between">
+        <div class="resource-value" data-value="{{renown.glory.value}}" data-name="system.renown.glory.value">
+            <span class="resource-value-empty glory-value" data-action="dotCounterEmpty"></span>
+            {{#numLoop 5}}
+                <span class="resource-value-step glory-value" data-action="dotCounterChange" data-index="{{this}}"></span>
+            {{/numLoop}}
+        </div>
+    </div>
+  </div>
+  <!-- Honor -->
+  <div class="flex-group-center honor-value">
+    <label for="actor.system.renown.honor.value" class="resource-label rollable field-header" data-action="roll" data-value-paths="renown.honor.value"
+        data-renown="honor" data-select-dialog="true"
+        data-tooltip="Renown earned by keeping your word and following the Garou's laws and traditions." data-tooltip-direction="UP">
+        {{localize "WOD5E.WTA.Honor"}}
+        <i class="fa-solid fa-dice-d10"></i>
+    </label>
+    <div class="resource-content flexrow flex-center flex-between">
+        <div class="resource-value" data-value="{{renown.honor.value}}" data-name="system.renown.honor.value">
+            <span class="resource-value-empty honor-value" data-action="dotCounterEmpty"></span>
+            {{#numLoop 5}}
+                <span class="resource-value-step honor-value" data-action="dotCounterChange" data-index="{{this}}"></span>
+            {{/numLoop}}
+        </div>
+    </div>
+  </div>
+  <!-- Wisdom -->
+  <div class="flex-group-center wisdom-value">
+    <label for="actor.system.renown.wisdom.value" class="resource-label rollable field-header" data-action="roll" data-value-paths="renown.wisdom.value"
+        data-renown="wisdom" data-select-dialog="true"
+        data-tooltip="Renown earned through cunning, foresight, and knowing when not to fight." data-tooltip-direction="UP">
+        {{localize "WOD5E.WTA.Wisdom"}}
+        <i class="fa-solid fa-dice-d10"></i>
+    </label>
+    <div class="resource-content flexrow flex-center flex-between">
+        <div class="resource-value" data-value="{{renown.wisdom.value}}" data-name="system.renown.wisdom.value">
+            <span class="resource-value-empty wisdom-value" data-action="dotCounterEmpty"></span>
+            {{#numLoop 5}}
+                <span class="resource-value-step wisdom-value" data-action="dotCounterChange" data-index="{{this}}"></span>
+            {{/numLoop}}
+        </div>
+    </div>
+  </div>
+</div>

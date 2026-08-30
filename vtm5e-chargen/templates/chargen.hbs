@@ -1,0 +1,325 @@
+<div class="vtm5e-chargen">
+  <nav class="vtm5e-chargen-steps">
+    {{#each steps}}
+      <button type="button" class="vtm5e-chargen-step-btn {{#if this.active}}active{{/if}} {{#if this.done}}done{{/if}} {{#if this.locked}}locked{{/if}}" data-action="goToStep" data-step="{{this.id}}" {{#if this.locked}}disabled{{/if}}>
+        <span class="vtm5e-chargen-step-num">{{this.num}}</span>
+        <span class="vtm5e-chargen-step-label">{{this.label}}</span>
+      </button>
+    {{/each}}
+  </nav>
+
+  <div class="vtm5e-chargen-body">
+
+    {{#if stepFlags.isConcept}}
+    <section class="vtm5e-chargen-step">
+      <h2>Concept, Ambition &amp; Desire</h2>
+      <p class="vtm5e-chargen-hint">Concept is who your character is, in one sentence. Ambition is the big goal that might take years. Desire is what they want this week.</p>
+      <label>Concept</label>
+      <input type="text" data-field="system.headers.concept" value="{{concept}}" />
+      <label>Ambition</label>
+      <input type="text" data-field="system.headers.ambition" value="{{ambition}}" />
+      <label>Desire</label>
+      <input type="text" data-field="system.headers.desire" value="{{desire}}" />
+      <label>Generation</label>
+      <select id="vtm5e-chargen-generation-select">
+        <option value="">Not set</option>
+        {{#each generationOptions}}
+          <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+        {{/each}}
+      </select>
+      <p class="vtm5e-chargen-hint">Sets Blood Potency to the minimum starting value for that generation (corebook p.213), and suggests an Embrace-date era based on the same generation tables (editable on Final Touches). Grants from your Clan or Predator Type may raise Blood Potency further.</p>
+    </section>
+    {{/if}}
+
+    {{#if stepFlags.isAttributes}}
+    <section class="vtm5e-chargen-step">
+      <h2>Attributes</h2>
+      <p class="vtm5e-chargen-hint">Corebook budget: one Attribute at ••••, three at •••, four at ••, and one at •. Click a dot to set the rating; click the last filled dot to reduce it.</p>
+      <div class="vtm5e-chargen-budget-row">
+        {{#each attributeBudget}}
+          <div class="vtm5e-chargen-budget-stat {{#if this.over}}over{{/if}}">
+            <span class="vtm5e-chargen-budget-dots">{{this.dots}}</span>
+            <b>{{this.used}}/{{this.allowed}}</b>
+          </div>
+        {{/each}}
+      </div>
+      {{#each attributes}}
+        <div class="vtm5e-chargen-attr-group">
+          <h3>{{@key}}</h3>
+          {{#each this}}
+            <div class="vtm5e-chargen-dot-row">
+              <span class="vtm5e-chargen-dot-row-label" data-tooltip="{{this.tooltip}}" data-tooltip-direction="UP">{{this.label}}</span>
+              <span class="vtm5e-chargen-dots">
+                {{#each this.dots}}
+                  <span class="vtm5e-chargen-dot {{#if this.filled}}filled{{/if}}" data-action="adjustAttribute" data-attribute="{{../id}}" data-n="{{this.n}}"></span>
+                {{/each}}
+              </span>
+            </div>
+          {{/each}}
+        </div>
+      {{/each}}
+    </section>
+    {{/if}}
+
+    {{#if stepFlags.isSkills}}
+    <section class="vtm5e-chargen-step">
+      <h2>Skills</h2>
+      <p class="vtm5e-chargen-hint">Corebook budget: pick one Skill distribution below, then assign exactly that many Skills at each rating. Anything not covered stays at 0. (Plus 2 free Specialties, picked automatically where a Predator Type grants one.)</p>
+
+      <div class="vtm5e-chargen-skill-dist-grid">
+        {{#each skillBudget.distributions}}
+          <div class="vtm5e-chargen-skill-dist-card {{#if this.selected}}selected{{/if}}" data-action="pickSkillDistribution" data-distribution="{{this.key}}">
+            <div class="vtm5e-chargen-skill-dist-name">{{this.label}}</div>
+            <div class="vtm5e-chargen-skill-dist-desc">{{this.description}}</div>
+          </div>
+        {{/each}}
+      </div>
+
+      {{#if skillBudget.selectedKey}}
+        <div class="vtm5e-chargen-budget-row">
+          {{#each skillBudget.rows}}
+            <div class="vtm5e-chargen-budget-stat {{#if this.over}}over{{/if}}">
+              <span class="vtm5e-chargen-budget-dots">{{this.dots}}</span>
+              <b>{{this.used}}/{{this.allowed}}</b>
+            </div>
+          {{/each}}
+        </div>
+      {{else}}
+        <p class="vtm5e-chargen-hint">Pick a distribution above before assigning Skill dots.</p>
+      {{/if}}
+
+      <div class="vtm5e-chargen-skill-columns">
+        {{#each skills}}
+          <div class="vtm5e-chargen-attr-group">
+            <h3>{{@key}}</h3>
+            {{#each this}}
+              <div class="vtm5e-chargen-dot-row">
+                <span class="vtm5e-chargen-dot-row-label" data-tooltip="{{this.tooltip}}" data-tooltip-direction="UP">{{this.label}}</span>
+                <span class="vtm5e-chargen-dots">
+                  {{#each this.dots}}
+                    <span class="vtm5e-chargen-dot {{#if this.filled}}filled{{/if}}" data-action="adjustSkill" data-skill="{{../id}}" data-n="{{this.n}}"></span>
+                  {{/each}}
+                </span>
+              </div>
+            {{/each}}
+          </div>
+        {{/each}}
+      </div>
+    </section>
+    {{/if}}
+
+    {{#if stepFlags.isClan}}
+    <section class="vtm5e-chargen-step">
+      <h2>Clan</h2>
+      <p class="vtm5e-chargen-hint">Click a clan to read its description below. Its free Discipline-dot choice applies when you click Next, not immediately.</p>
+      {{#if currentClan}}<p class="vtm5e-chargen-hint">Current pick: <b>{{currentClan.name}}</b>. Picking another clan replaces it.</p>{{/if}}
+      <div class="vtm5e-chargen-card-grid">
+        {{#each clans}}
+          <div class="vtm5e-chargen-card {{#if this.selected}}selected{{/if}}" data-clan-id="{{this.id}}">
+            <img src="{{this.img}}" alt="{{this.name}}" />
+            <div class="vtm5e-chargen-card-name">{{this.name}}</div>
+          </div>
+        {{/each}}
+      </div>
+      {{#if currentClan}}
+      <div class="vtm5e-chargen-detail">
+        <h3>{{currentClan.name}}</h3>
+        <div>{{{currentClan.system.description}}}</div>
+        <div class="vtm5e-chargen-bane">{{{currentClan.system.bane}}}</div>
+      </div>
+      {{/if}}
+    </section>
+    {{/if}}
+
+    {{#if stepFlags.isPredator}}
+    <section class="vtm5e-chargen-step">
+      <h2>Predator Type</h2>
+      <p class="vtm5e-chargen-hint">Click a Predator Type to read its description below. Its grants apply when you click Next, not immediately - that's also when you'll be prompted for any choices (Discipline, specialty, etc).</p>
+      {{#if currentPredator}}<p class="vtm5e-chargen-hint">Current pick: <b>{{currentPredator.name}}</b>. Picking another replaces it (grants from the old pick are NOT undone automatically if you already advanced past this step once - review before switching).</p>{{/if}}
+      <div class="vtm5e-chargen-card-grid">
+        {{#each predators}}
+          <div class="vtm5e-chargen-card {{#if this.selected}}selected{{/if}} {{#if this.unavailable}}unavailable{{/if}}" data-predator-id="{{this.id}}" {{#if this.unavailable}}title="Not available: {{this.unavailableReason}}"{{/if}}>
+            <img src="{{this.img}}" alt="{{this.name}}" />
+            <div class="vtm5e-chargen-card-name">{{this.name}}</div>
+            {{#if this.unavailable}}<div class="vtm5e-chargen-card-unavailable-tag">Unavailable</div>{{/if}}
+          </div>
+        {{/each}}
+      </div>
+      {{#if currentPredator}}
+      <div class="vtm5e-chargen-detail">
+        <h3>{{currentPredator.name}}</h3>
+        <div>{{{currentPredator.system.description}}}</div>
+      </div>
+      {{/if}}
+    </section>
+    {{/if}}
+
+    {{#if stepFlags.isMeritsflaws}}
+    <section class="vtm5e-chargen-step">
+      <h2>Merits, Flaws &amp; Backgrounds</h2>
+      <p class="vtm5e-chargen-hint">Corebook budget: 7 dots of Merits/Backgrounds. You must take at least 2 dots of Flaws <b>by choice, in addition to</b> anything your Clan/Predator Type already gave you for free - those free dots show locked below and don't count either toward this requirement or toward the bonus. Voluntary Flaw dots refund up to 2 bonus Merit dots (1:1) - you can take more than that, they just stop paying out.</p>
+      <p class="vtm5e-chargen-hint">Heads up: the <b>Resources</b> Background (under Backgrounds below) sets how much starting cash you'll have to spend once you finish - more dots means more money to outfit your character with.</p>
+
+      {{#if thinBlood}}
+      <div class="vtm5e-chargen-tb-section">
+        <h3>Thin-Blood Merits &amp; Flaws</h3>
+        <p class="vtm5e-chargen-hint">Thin-blood characters must take between 1 and 3 Thin-Blood Merits, and the same number of Thin-Blood Flaws. These have no dot cost and don't count against the Merits/Backgrounds pool below.</p>
+        <div class="vtm5e-chargen-tb-status {{#unless thinBlood.valid}}invalid{{/unless}}">
+          Merits: <b>{{thinBlood.meritsTaken}}</b>/3 &middot; Flaws: <b>{{thinBlood.flawsTaken}}</b>/3
+          {{#if thinBlood.valid}} &middot; looks good{{else}} &middot; need 1-3 of each, equal counts{{/if}}
+        </div>
+        <div class="vtm5e-chargen-tb-columns">
+          <div>
+            <h4>Merits</h4>
+            {{#each thinBlood.merits}}
+              <div class="vtm5e-chargen-tb-item {{#if this.taken}}taken{{/if}}" data-action="toggleThinBloodItem" data-tb-id="{{this.id}}" title="{{this.description}}">
+                <span class="vtm5e-chargen-tb-item-name">{{this.name}}</span>
+                {{#if this.taken}}<span class="vtm5e-chargen-tb-check">✓</span>{{/if}}
+              </div>
+            {{/each}}
+          </div>
+          <div>
+            <h4>Flaws</h4>
+            {{#each thinBlood.flaws}}
+              <div class="vtm5e-chargen-tb-item {{#if this.taken}}taken{{/if}}" data-action="toggleThinBloodItem" data-tb-id="{{this.id}}" title="{{this.description}}">
+                <span class="vtm5e-chargen-tb-item-name">{{this.name}}</span>
+                {{#if this.taken}}<span class="vtm5e-chargen-tb-check">✓</span>{{/if}}
+              </div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+      {{/if}}
+
+      <div class="vtm5e-chargen-mf-pool">
+        <div class="vtm5e-chargen-mf-pool-stat">
+          <span>Merits / Backgrounds</span>
+          <b class="{{#if meritsFlaws.overBudget}}over{{/if}}">{{meritsFlaws.meritsSpent}} / {{meritsFlaws.poolMax}}</b>
+        </div>
+        <div class="vtm5e-chargen-mf-pool-stat">
+          <span>Flaws taken</span>
+          <b>{{meritsFlaws.flawsSpent}}</b>
+          <i>(+{{meritsFlaws.flawBonus}} bonus dot{{#unless meritsFlaws.flawBonus}}s{{/unless}}, max +2)</i>
+        </div>
+      </div>
+
+      {{#if meritsFlaws.owned.length}}
+      <div class="vtm5e-chargen-mf-owned">
+        <h3>Currently Acquired</h3>
+        <ul>
+          {{#each meritsFlaws.owned}}
+            <li class="{{#if this.isFlaw}}flaw{{/if}}" title="{{this.description}}">
+              <span class="vtm5e-chargen-mf-owned-name">{{this.name}}</span>
+              <span class="vtm5e-chargen-mf-owned-dots">{{this.dotsDisplay}}</span>
+              {{#if this.isGranted}}<span class="vtm5e-chargen-mf-owned-tag">free</span>{{/if}}
+              {{#if this.removable}}
+                {{#if this.compendiumId}}
+                  <button type="button" class="vtm5e-chargen-mf-owned-remove" data-action="adjustMeritFlaw" data-mf-id="{{this.compendiumId}}" data-n="0" title="Remove {{this.name}}">×</button>
+                {{else}}
+                  <button type="button" class="vtm5e-chargen-mf-owned-remove" data-action="removeOwnedFeature" data-item-id="{{this.actorItemId}}" title="Remove {{this.name}}">×</button>
+                {{/if}}
+              {{/if}}
+            </li>
+          {{/each}}
+        </ul>
+      </div>
+      {{/if}}
+
+      <input type="text" id="vtm5e-chargen-mf-search" placeholder="Search Merits, Flaws &amp; Backgrounds..." value="{{meritsFlaws.search}}" />
+
+      {{#each meritsFlaws.groups}}
+        <h3 class="vtm5e-chargen-mf-type-label">{{this.label}}</h3>
+        {{#each this.folders}}
+          <div class="vtm5e-chargen-mf-folder {{#if this.open}}open{{/if}}">
+            <button type="button" class="vtm5e-chargen-mf-folder-header" data-action="toggleMfFolder" data-folder="{{this.name}}">
+              <i class="fas fa-caret-right"></i> {{this.name}} <span class="vtm5e-chargen-mf-folder-count">({{this.items.length}})</span>
+            </button>
+            <div class="vtm5e-chargen-mf-folder-body">
+              {{#each this.items}}
+                <div class="vtm5e-chargen-mf-item {{#if this.unavailable}}unavailable{{/if}} {{#if this.expanded}}expanded{{/if}}">
+                  <div class="vtm5e-chargen-mf-item-main" {{#if this.unavailable}}title="Not available: {{this.unavailableReason}}"{{/if}}>
+                    <span class="vtm5e-chargen-mf-item-name" data-action="toggleMfItem" data-mf-item-id="{{this.id}}">
+                      <i class="fas fa-chevron-{{#if this.expanded}}up{{else}}down{{/if}} vtm5e-chargen-mf-item-caret"></i>
+                      {{this.name}}
+                      {{#if this.unavailable}}<span class="vtm5e-chargen-mf-unavailable-tag">unavailable</span>{{/if}}
+                    </span>
+                    {{#if this.fixedCost}}
+                      <button type="button" class="vtm5e-chargen-mf-fixed-btn {{#if this.owned}}taken{{/if}} {{#if this.lockedFixed}}locked{{/if}}" data-action="adjustMeritFlaw" data-mf-id="{{this.id}}" data-n="{{this.fixedCost}}" {{#if this.lockedFixed}}disabled{{/if}} {{#if this.unavailable}}disabled{{/if}} title="{{#if this.lockedFixed}}Granted free - not editable here{{else if this.unavailable}}Not available: {{this.unavailableReason}}{{else}}Costs {{this.fixedCost}} dots{{/if}}">
+                        <span class="vtm5e-chargen-mf-fixed-btn-dots">{{this.fixedCostDots}}</span>
+                        <span class="vtm5e-chargen-mf-fixed-btn-num">({{this.fixedCost}})</span>
+                      </button>
+                    {{else}}
+                      <span class="vtm5e-chargen-dots">
+                        {{#each this.dots}}
+                          <span class="vtm5e-chargen-dot {{#if this.filled}}filled{{/if}} {{#if this.locked}}locked{{/if}} {{#if this.capped}}capped{{/if}} {{#if ../unavailable}}unavailable{{/if}}" data-action="adjustMeritFlaw" data-mf-id="{{../id}}" data-n="{{this.n}}" title="{{#if this.locked}}Granted free - not editable here{{else if ../unavailable}}Not available: {{../unavailableReason}}{{else if this.capped}}Capped: {{this.capReason}}{{/if}}"></span>
+                        {{/each}}
+                      </span>
+                    {{/if}}
+                  </div>
+                  <p class="vtm5e-chargen-mf-item-desc">{{this.description}}</p>
+                </div>
+              {{/each}}
+            </div>
+          </div>
+        {{/each}}
+      {{/each}}
+    </section>
+    {{/if}}
+
+    {{#if stepFlags.isTouchstones}}
+    <section class="vtm5e-chargen-step">
+      <h2>Touchstones &amp; Convictions</h2>
+      <p class="vtm5e-chargen-hint">Convictions are the two or three principles this character refuses to compromise, no matter what the Beast wants - not "humanity" in the abstract, but the specific line, like "I won't hurt the innocent" or "family comes before the Masquerade." Touchstones are the people (occasionally a place or a cause) who keep those Convictions real instead of theoretical - usually one per Conviction, someone the character would still bleed for. Acting against a Conviction, or losing a Touchstone, is how a vampire drifts toward the Beast - naming them now is what gives future frenzy and degeneration rolls something to actually mean. Typically 1-3 Convictions, 1 Touchstone per Conviction.</p>
+      <label>Convictions</label>
+      <textarea data-field="system.headers.tenets">{{tenets}}</textarea>
+      <label>Touchstones</label>
+      <textarea data-field="system.headers.touchstones">{{touchstones}}</textarea>
+    </section>
+    {{/if}}
+
+    {{#if stepFlags.isFinal}}
+    <section class="vtm5e-chargen-step">
+      <h2>Final Touches</h2>
+      <label>Character Name</label>
+      <input type="text" data-field="name" value="{{actor.name}}" />
+      <p class="vtm5e-chargen-hint">This is currently just your account name - give your character their real name before you finish.</p>
+      <div class="vtm5e-chargen-final-grid">
+        <div><span>Health</span><b>{{health}}</b></div>
+        <div><span>Willpower</span><b>{{willpower}}</b></div>
+        <div><span data-tooltip="How much of your mortal morality you've retained against the Beast - low Humanity risks Stains and frenzy." data-tooltip-direction="UP">Humanity</span><b>{{humanity}}</b></div>
+        <div><span data-tooltip="The strength and age of your vitae - higher Blood Potency means stronger Disciplines, but a harsher Bane and greater Hunger costs." data-tooltip-direction="UP">Blood Potency</span><b>{{bloodPotency}}</b></div>
+        <div><span data-tooltip="How ravenous the Beast's hunger for blood has grown - higher Hunger means more dice on your rolls, but greater risk of a Bestial Failure." data-tooltip-direction="UP">Hunger</span><b>{{hunger}}</b></div>
+      </div>
+      <label>Sire</label>
+      <input type="text" data-field="system.headers.sire" value="{{sire}}" />
+      <label>Embrace Date</label>
+      <input type="text" data-field="system.bio.dateof.death" value="{{embraceDate}}" />
+      <p class="vtm5e-chargen-hint">Auto-suggested from your Generation pick on the Concept step - just an abstraction based on the corebook's generation tables, edit freely.</p>
+    </section>
+    {{/if}}
+
+  </div>
+
+  <aside class="vtm5e-chargen-log">
+    <h3>Chargen Log</h3>
+    {{#if log.length}}
+      <ul>
+        {{#each log}}<li>{{{this}}}</li>{{/each}}
+      </ul>
+    {{else}}
+      <p class="vtm5e-chargen-hint">Automatic grants will show up here as you make picks.</p>
+    {{/if}}
+  </aside>
+
+  <div class="vtm5e-chargen-nav">
+    <button type="button" data-action="prevStep" {{#if isFirstStep}}disabled{{/if}}>Back</button>
+    <div class="vtm5e-chargen-nav-right">
+      {{#if incompleteMessage}}<span class="vtm5e-chargen-nav-warning">{{incompleteMessage}}</span>{{/if}}
+      {{#if isLastStep}}
+        <button type="button" data-action="finishWizard" {{#if nextDisabled}}disabled{{/if}}>Finish</button>
+      {{else}}
+        <button type="button" data-action="nextStep" {{#if nextDisabled}}disabled{{/if}}>Next</button>
+      {{/if}}
+    </div>
+  </div>
+</div>
