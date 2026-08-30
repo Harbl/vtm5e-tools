@@ -3,6 +3,7 @@
   "title": "VtM5e Predator Types",
   "description": "Standalone, complete Predator Type compendium (all 16 corebook types) - split out of vtm5e-disciplines, which had been used as a dumping ground for anything wod5e doesn't have a dedicated pack for. Also replaces the community compendium's own predator-type entries, which duplicated 7 of these with unverified dice pools (all defaulted to Wits + Awareness, contradicting the corebook's own Predator Pools table, p.307-308). Not published; built for personal use.",
   "version": "1.0.0",
+  "manifest": "https://raw.githubusercontent.com/Harbl/vtm5e-tools/master/vtm5e-predatortypes/module.json",
   "compatibility": {
     "minimum": "13",
     "verified": "14"

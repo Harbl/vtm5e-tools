@@ -3,6 +3,7 @@
   "title": "VtM5e Character Creation Wizard",
   "description": "Step-by-step chargen wizard: walks the corebook chargen flow, auto-applies grants from Clan/Predator Type picks (with a choice prompt when a grant has options), and logs every automatic change so the player always knows what they got. Reads compendium data from vtm5e-clans, vtm5e-predatortypes, and vtm5e-meritsflaws. Not published; built for personal use.",
   "version": "1.0.34",
+  "manifest": "https://raw.githubusercontent.com/Harbl/vtm5e-tools/master/vtm5e-chargen/module.json",
   "compatibility": {
     "minimum": "13",
     "verified": "14"

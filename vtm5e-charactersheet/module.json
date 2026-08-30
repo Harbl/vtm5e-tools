@@ -3,6 +3,7 @@
   "title": "VtM5e Character Sheet Reskin",
   "description": "Visual/structural reskin of the wod5e Vampire actor sheet - dark gothic theme, reorganized tabs, custom dot-trackers, matching a reference design. Layers on top of wod5e via its own stylesheet (and, from Phase 2 onward, a registered custom sheet class) without modifying the base system. Not published; built for personal use.",
   "version": "0.1.0",
+  "manifest": "https://raw.githubusercontent.com/Harbl/vtm5e-tools/master/vtm5e-charactersheet/module.json",
   "compatibility": {
     "minimum": "13",
     "verified": "14"

@@ -3,6 +3,7 @@
   "title": "VtM5e Coterie",
   "description": "Party sheet for Vampire the Masquerade 5e - live Members/Merits & Flaws/Equipment reads across the coterie. Not published; built for personal use.",
   "version": "0.1.0",
+  "manifest": "https://raw.githubusercontent.com/Harbl/vtm5e-tools/master/vtm5e-coterie/module.json",
   "compatibility": {
     "minimum": "13",
     "verified": "14"

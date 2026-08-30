@@ -3,6 +3,7 @@
   "title": "VtM5e Automation",
   "description": "Personal automation layer for the wod5e system - damage application, opposed rolls, and other midiQOL-style conveniences for Vampire the Masquerade 5e. Not published; built for personal use.",
   "version": "0.1.17",
+  "manifest": "https://raw.githubusercontent.com/Harbl/vtm5e-tools/master/vtm5e-automation/module.json",
   "compatibility": {
     "minimum": "13",
     "verified": "14"

@@ -12,7 +12,13 @@ Everything is independently toggleable from **Manage Modules** - turn off anythi
 
 ## Install
 
-Install `vtm5e-tools` via its manifest URL in Foundry's Install Module dialog. It requires (and Foundry will offer to install) every module below.
+In Foundry's Install Module dialog, paste this manifest URL:
+
+```
+https://raw.githubusercontent.com/Harbl/vtm5e-tools/master/vtm5e-tools/module.json
+```
+
+`vtm5e-tools` itself has no code - it just declares the modules below as dependencies. Installing it pulls in the rest automatically.
 
 ## What's included
 

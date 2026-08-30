@@ -3,6 +3,7 @@
   "title": "VtM5e Equipment (Chicago)",
   "description": "Standalone weapons/armor/gear compendium for a modern-day Chicago Vampire the Masquerade 5e chronicle - named real-world firearms with brand variety, built on the V5 Homebrew Wiki's weapon tag system (Sharei Faedrawolf) and made functional via vtm5e-automation's weapon-tags.js. Neither the corebook nor the third-party vampire-the-masquerade-5e-compendium addon ship a real weapons catalog, so this is built from scratch rather than forked. Not published; built for personal use.",
   "version": "1.0.0",
+  "manifest": "https://raw.githubusercontent.com/Harbl/vtm5e-tools/master/vtm5e-equipment/module.json",
   "compatibility": {
     "minimum": "13",
     "verified": "14"
