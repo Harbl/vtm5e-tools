@@ -3,7 +3,7 @@
   "title": "VtM5e Merits, Flaws & Backgrounds",
   "description": "Standalone, complete Merits/Flaws/Backgrounds compendium (V5 corebook + Player's Guide individual-PC additions) - replaces reliance on the community compendium's 'advantages-flaws' pack for chargen purposes. Not published; built for personal use.",
   "version": "1.0.0",
-  "manifest": "https://raw.githubusercontent.com/Harbl/vtm5e-tools/master/vtm5e-meritsflaws/module.json",
+  "manifest": "https://github.com/Harbl/vtm5e-tools/releases/latest/download/vtm5e-meritsflaws.json",
   "compatibility": {
     "minimum": "13",
     "verified": "14"
@@ -34,5 +34,7 @@
         "ASSISTANT": "OWNER"
       }
     }
-  ]
+  ],
+  "url": "https://github.com/Harbl/vtm5e-tools",
+  "download": "https://github.com/Harbl/vtm5e-tools/releases/latest/download/vtm5e-meritsflaws.zip"
 }

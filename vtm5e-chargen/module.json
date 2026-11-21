@@ -3,7 +3,7 @@
   "title": "VtM5e Character Creation Wizard",
   "description": "Step-by-step chargen wizard: walks the corebook chargen flow, auto-applies grants from Clan/Predator Type picks (with a choice prompt when a grant has options), and logs every automatic change so the player always knows what they got. Reads compendium data from vtm5e-clans, vtm5e-predatortypes, and vtm5e-meritsflaws. Not published; built for personal use.",
   "version": "1.0.34",
-  "manifest": "https://raw.githubusercontent.com/Harbl/vtm5e-tools/master/vtm5e-chargen/module.json",
+  "manifest": "https://github.com/Harbl/vtm5e-tools/releases/latest/download/vtm5e-chargen.json",
   "compatibility": {
     "minimum": "13",
     "verified": "14"
@@ -22,12 +22,34 @@
       }
     ],
     "requires": [
-      { "id": "vtm5e-clans", "type": "module" },
-      { "id": "vtm5e-predatortypes", "type": "module" },
-      { "id": "vtm5e-meritsflaws", "type": "module" },
-      { "id": "vtm5e-disciplines", "type": "module" }
+      {
+        "id": "vtm5e-clans",
+        "type": "module",
+        "manifest": "https://github.com/Harbl/vtm5e-tools/releases/latest/download/vtm5e-clans.json"
+      },
+      {
+        "id": "vtm5e-predatortypes",
+        "type": "module",
+        "manifest": "https://github.com/Harbl/vtm5e-tools/releases/latest/download/vtm5e-predatortypes.json"
+      },
+      {
+        "id": "vtm5e-meritsflaws",
+        "type": "module",
+        "manifest": "https://github.com/Harbl/vtm5e-tools/releases/latest/download/vtm5e-meritsflaws.json"
+      },
+      {
+        "id": "vtm5e-disciplines",
+        "type": "module",
+        "manifest": "https://github.com/Harbl/vtm5e-tools/releases/latest/download/vtm5e-disciplines.json"
+      }
     ]
   },
-  "esmodules": ["scripts/main.js"],
-  "styles": ["styles/vtm5e-chargen.css"]
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/vtm5e-chargen.css"
+  ],
+  "url": "https://github.com/Harbl/vtm5e-tools",
+  "download": "https://github.com/Harbl/vtm5e-tools/releases/latest/download/vtm5e-chargen.zip"
 }

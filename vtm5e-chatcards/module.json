@@ -3,7 +3,7 @@
   "title": "VtM5e Chat Card Reskin",
   "description": "Visual reskin of wod5e's roll chat cards - dark card background, diamond dice, banner-style roll title and result bar. Pure CSS, cascades after wod5e's own stylesheet without modifying the base system.",
   "version": "0.1.0",
-  "manifest": "https://raw.githubusercontent.com/Harbl/vtm5e-tools/master/vtm5e-chatcards/module.json",
+  "manifest": "https://github.com/Harbl/vtm5e-tools/releases/latest/download/vtm5e-chatcards.json",
   "compatibility": {
     "minimum": "13",
     "verified": "14"
@@ -24,5 +24,7 @@
   },
   "styles": [
     "styles/vtm5e-chatcards.css"
-  ]
+  ],
+  "url": "https://github.com/Harbl/vtm5e-tools",
+  "download": "https://github.com/Harbl/vtm5e-tools/releases/latest/download/vtm5e-chatcards.zip"
 }

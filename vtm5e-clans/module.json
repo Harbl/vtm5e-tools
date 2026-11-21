@@ -3,7 +3,7 @@
   "title": "VtM5e Clans",
   "description": "Standalone, complete Clan compendium (all 16: 14 major clans + Caitiff + Thin-Blooded). Originally covered only the 7 clans the V5 corebook doesn't ship (from the Player's Guide); expanded to the full roster so this module is the sole, authoritative Clan source for chargen and no longer depends on the community compendium's own Clan pack. Not published; built for personal use.",
   "version": "1.0.0",
-  "manifest": "https://raw.githubusercontent.com/Harbl/vtm5e-tools/master/vtm5e-clans/module.json",
+  "manifest": "https://github.com/Harbl/vtm5e-tools/releases/latest/download/vtm5e-clans.json",
   "compatibility": {
     "minimum": "13",
     "verified": "14"
@@ -34,5 +34,7 @@
         "ASSISTANT": "OWNER"
       }
     }
-  ]
+  ],
+  "url": "https://github.com/Harbl/vtm5e-tools",
+  "download": "https://github.com/Harbl/vtm5e-tools/releases/latest/download/vtm5e-clans.zip"
 }
